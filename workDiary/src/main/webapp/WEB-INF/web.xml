@@ -5,17 +5,33 @@
 	  	<welcome-file>index.html</welcome-file>
 	</welcome-file-list>
 	
+	<!-- servlet -->
 	<servlet>
-		<servlet-name>action</servlet-name>
-		<servlet-class>org.apache.struts.action.ActionServlet</servlet-class>
-		<init-param>
-			<param-name>config</param-name>
-			<param-value>/WEB-INF/struts-config.xml</param-value>
-		</init-param>
-		<load-on-startup>0</load-on-startup>
+		<servlet-name>startUpServlet</servlet-name>
+		<servlet-class>controller.servlet.StartUpServlet</servlet-class>
 	</servlet>
+	<servlet>
+		<servlet-name>projectChangeAsyncServlet</servlet-name>
+		<servlet-class>controller.servlet.async.ProjectChangeAsyncServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>phaseChangeAsyncServlet</servlet-name>
+		<servlet-class>controller.servlet.async.PhaseChangeAsyncServlet</servlet-class>
+	</servlet>
+
+	
+	<!-- servlet mapping -->
 	<servlet-mapping>
-		<servlet-name>action</servlet-name>
-		<url-pattern>*.do</url-pattern>
+		<servlet-name>startUpServlet</servlet-name>
+		<url-pattern>/startUp</url-pattern>
 	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>projectChangeAsyncServlet</servlet-name>
+		<url-pattern>/projChange</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>phaseChangeAsyncServlet</servlet-name>
+		<url-pattern>/phaseChange</url-pattern>
+	</servlet-mapping>
+	
 </web-app>

@@ -11,6 +11,13 @@
 	
 		<script src="js\jquery-3.6.3.min.js"></script>
 		<script src="js\jquery-ui.min.js"></script>
+		
+		<script src="js\diaryContentChange.js"></script>
+		<script src="js\diaryToDefault.js"></script>
+		<script src="js\diaryTmpl.js"></script>
+		<script src="js\workDate.js"></script>
+		<script src="js\hourChange.js"></script>
+		<script src="js\selectDiary.js"></script>
 	
 		<style type="text/css">
 			div.ui-datepicker {
@@ -18,39 +25,74 @@
 			}
 		</style>
 		<script type="text/javascript">
+
+			let diaryIdPrefixes = {
+				'projectIdPrefix' : 'diary_project_',
+				'phaseIdPrefix' : 'diary_phase_',
+				'workIdPrefix' : 'diary_work_',
+				'textIdPrefix' : 'diary_text_',
+				'hourIdPrefix' : 'diary_hour_',
+				'statusIdPrefix' : 'diary_status_',
+				'trIdPrefix' : 'diary_tr_'
+			}
+
+			let dateTextDivId = 'date_text_div';
+			let workDateDivId = 'work_date_div';
+			let workHourTextSpanId = 'work_hour_text_span';
+			let selectedDiaryTrIdInputId = 'selected_diary_tr_id_input';
+			
+			
+			let diaryCount = 1;
+			
 			$(document).ready(function () {
-				$("#work_date").datepicker({
-					dateFormat : 'yy/m/d',
-					onSelect: function (dateText) {
-						console.log(dateText);
-						
-					}
-				});
+
+				initWorkDate(workDateDivId, dateTextDivId);
+				$("#create_btn").click(createBtnClicked);
+
 			});
-			
-			function diaryProjectChanged(){
-				
-				var ajaxUrl = 'diaryContent.do?action=getPhases';
-			
-				$.ajax({
-					url : ajaxUrl,
-					data : 
+
+			function createBtnClicked(){
+
+				var diaryContent = getDiaryContent('diary_tmpl', diaryCount, diaryIdPrefixes);
+				$("#diary_body").append(diaryContent);
+
+				var diaryProjectId = diaryIdPrefixes.projectIdPrefix + diaryCount;
+				var diaryPhaseId = diaryIdPrefixes.phaseIdPrefix + diaryCount;
+				var diaryWorkId = diaryIdPrefixes.workIdPrefix + diaryCount;
+				var diaryHourId = diaryIdPrefixes.hourIdPrefix + diaryCount;
+				var diaryTrId = diaryIdPrefixes.trIdPrefix + diaryCount;
+
+				$('#' + diaryProjectId).change(function(){
+					diaryProjectChanged(diaryProjectId, diaryPhaseId, diaryWorkId);
 				});
-			}
-			function appendDiaryPhase(diaryPhases){
-				
-				var optionTmpl = function(phaseId, phaseName){
-					
-					optionStr : '<option value="' + phaseId + '">' + phaseName + '</option>'
-				}
-				
-				
-				diaryPhases.foreach(function(currentValue){
-					
-					var option = new optionTmpl(currentValue.phase_id, currentValue.phase_name);
-					$("#diary_phase").html(option);
+				$('#' + diaryPhaseId).change(function(){
+					diaryPhaseChanged(diaryPhaseId, diaryWorkId);
 				});
+				diaryHourInputSetting(diaryHourId, workHourTextSpanId);
+				selectDiaryTrSetting(diaryTrId, selectedDiaryTrIdInputId);
+				mouseenterChangeColor(diaryTrId);
+				mouseleaveChangeColor(diaryTrId);
+				
+				diaryCount++;
 			}
+			
+			function diaryProjectChanged(diaryProjectId, diaryPhaseId, diaryWorkId){
+
+				diaryPhaseToDefault(diaryPhaseId);
+				diaryWorkToDefault(diaryWorkId);
+
+				var projectValue = $('#' + diaryProjectId).val();
+				var dataJson = projectChangedAjax(projectValue, diaryPhaseId);
+			}
+			function diaryPhaseChanged(diaryPhaseId, diaryWorkId){
+
+				diaryWorkToDefault(diaryWorkId);
+
+				var phaseValue = $('#' + diaryPhaseId).val();
+				var dataJson = phaseChangedAjax(phaseValue, diaryWorkId);
+			}
+			
+			
 		</script>
 	
 		<title>工作日誌員工系統</title>
@@ -83,7 +125,9 @@
 						</tr>
 						<tr>
 							<td width="118" bgcolor="#9999FF" height="23">工作日誌日期：</td>
-							<td width="72" height="23"></td>
+							<td width="72" height="23">
+								<div id="date_text_div"></div>
+							</td>
 							<td bgcolor="#9999FF" height="23">狀態：</td>
 							<td height="23">
 								<font color="#FF0000">
@@ -91,12 +135,14 @@
 								</font>
 							</td>
 							<td bgcolor="#9999FF" height="23">本日工時總計：</td>
-							<td colspan="3" height="23"></td>
+							<td colspan="3" height="23">
+								<span id="work_hour_text_span" style="margin-left: 5px;margin-right: 5px;">0.0</span>小時
+							</td>
 						</tr>
 						<tr>
 							<td colspan="8">
 								<div align="right">
-									<input type="button" value="新增" />
+									<input type="button" id="create_btn" value="新增" />
 									<input type="button" value="刪除" />
 									<input type="button" value="清除" />
 									<input type="button" value="重設" />
@@ -115,7 +161,7 @@
 			</tr>
 			<tr>
 				<td width="200" valign="top">
-					<div id="work_date"></div>
+					<div id="work_date_div"></div>
 				</td>
 				<td width="800" valign="top" colspan="2">
 					<table border="1" width="100%" border-color="#0000FF">
@@ -129,36 +175,7 @@
 							</tr>
 						</thead>
 	
-						<tbody id="detailList">
-							<tr style="background-color: rgb(255, 255, 255);">
-								<td>
-									<select id="diary_project">
-										<option value="0" >請選擇</option>
-										
-										<c:forEach var="projectVO" items="${projectVOs}">
-											<option value="${projectVO.projectId }">${projectVO.projectName }</option>
-										</c:forEach>
-									</select>
-								</td>
-								<td>
-									<select id="diary_phase">
-										<option value="0">請選擇</option>
-									</select>
-								</td>
-								<td>
-									<select id="diary_work">
-										<option value="0">請選擇</option>
-									</select>
-								</td>
-								<td>
-									<div align="center">
-										<input type="text" size="27">
-									</div>
-								</td>
-								<td>
-									<input type="text" size="1" value="0.0">
-								</td>
-							</tr>
+						<tbody id="diary_body">
 							
 						</tbody>
 	
@@ -173,11 +190,44 @@
 							</tr>
 						</tfoot>
 					</table>
-	
+					<input type="hidden" id="selected_diary_tr_id_input" value=""/>
 				</td>
 			</tr>
 		</table>
 	
+	
+		<template id="diary_tmpl">
+			<tr id="diary_tr_tmpl">
+				<td>
+					<select id="diary_project_tmpl">
+						<option value="0" >請選擇</option>
+						
+						<c:forEach var="projectVO" items="${projectVOs}">
+							<option value="${projectVO.projectId }">${projectVO.projectName }</option>
+						</c:forEach>
+					</select>
+				</td>
+				<td>
+					<select id="diary_phase_tmpl">
+						<option value="0">請選擇</option>
+					</select>
+				</td>
+				<td>
+					<select id="diary_work_tmpl">
+						<option value="0">請選擇</option>
+					</select>
+				</td>
+				<td>
+					<div align="center">
+						<input type="text" id="diary_text_tmpl" size="27">
+					</div>
+				</td>
+				<td>
+					<input type="text" id="diary_hour_tmpl" size="1"  value="0.0">
+				</td>
+			</tr>
+			<input type="hidden" id="diary_status_tmpl" size="1" value="1" />
+		</template>
 	</body>
-
+	
 </html>

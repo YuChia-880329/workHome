@@ -1,8 +1,6 @@
 package bean.vo;
 
-import org.apache.struts.action.ActionForm;
-
-public class DiaryContentVO extends ActionForm {
+public class DiaryContentVO{
 
 	private int projectId;
 	private int phaseId;
