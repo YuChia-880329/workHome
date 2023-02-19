@@ -36,25 +36,31 @@
 				'trIdPrefix' : 'diary_tr_'
 			}
 
+			let createBtnId = 'create_btn';
+			let deleteBtnId = 'delete_btn';
+			let clearBtnId = 'clear_btn';
+			
 			let dateTextDivId = 'date_text_div';
 			let workDateDivId = 'work_date_div';
 			let workHourTextSpanId = 'work_hour_text_span';
 			let selectedDiaryTrIdInputId = 'selected_diary_tr_id_input';
-			
+
+			let diaryTemplateId = 'diary_tmpl';
+			let diaryBodyId = 'diary_body';
 			
 			let diaryCount = 1;
 			
 			$(document).ready(function () {
 
 				initWorkDate(workDateDivId, dateTextDivId);
-				$("#create_btn").click(createBtnClicked);
+				$('#' + createBtnId).click(createBtnClicked);
 
 			});
 
 			function createBtnClicked(){
 
-				var diaryContent = getDiaryContent('diary_tmpl', diaryCount, diaryIdPrefixes);
-				$("#diary_body").append(diaryContent);
+				var diaryContent = getDiaryContent(diaryTemplateId, diaryCount, diaryIdPrefixes);
+				$('#' + diaryBodyId).append(diaryContent);
 
 				var diaryProjectId = diaryIdPrefixes.projectIdPrefix + diaryCount;
 				var diaryPhaseId = diaryIdPrefixes.phaseIdPrefix + diaryCount;
@@ -69,7 +75,7 @@
 					diaryPhaseChanged(diaryPhaseId, diaryWorkId);
 				});
 				diaryHourInputSetting(diaryHourId, workHourTextSpanId);
-				selectDiaryTrSetting(diaryTrId, selectedDiaryTrIdInputId);
+				selectDiaryTrSetting(diaryTrId, selectedDiaryTrIdInputId, deleteBtnId, clearBtnId);
 				mouseenterChangeColor(diaryTrId);
 				mouseleaveChangeColor(diaryTrId);
 				
@@ -143,8 +149,8 @@
 							<td colspan="8">
 								<div align="right">
 									<input type="button" id="create_btn" value="新增" />
-									<input type="button" value="刪除" />
-									<input type="button" value="清除" />
+									<input type="button" id="delete_btn" value="刪除" disabled />
+									<input type="button" id="clear_btn" value="清除" disabled />
 									<input type="button" value="重設" />
 								</div>
 							</td>

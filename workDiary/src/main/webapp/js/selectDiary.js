@@ -5,11 +5,13 @@
 	let bgColorProperty = 'background-color';
 	
 	
-	function selectDiaryTrSetting(diaryTrId, selectedDiaryTrIdInputId){
+	function selectDiaryTrSetting(diaryTrId, selectedDiaryTrIdInputId, deleteBtnId, clearBtnId){
 		
 		$('#' + diaryTrId).click(function(){
 			
 			selectDiaryTrHandler(diaryTrId, selectedDiaryTrIdInputId);
+			$('#' + deleteBtnId).prop('disabled', false);
+			$('#' + clearBtnId).prop('disabled', false);
 		});
 	}
 	function selectDiaryTrHandler(diaryTrId, selectedDiaryTrIdInputId){
