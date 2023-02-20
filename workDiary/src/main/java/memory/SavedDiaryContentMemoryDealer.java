@@ -1,6 +1,7 @@
 package memory;
 
 import java.util.List;
+import java.util.Map;
 
 import bean.dto.DiaryContentDTO;
 
@@ -20,7 +21,7 @@ public class SavedDiaryContentMemoryDealer {
 	}
 	
 	
-	public List<DiaryContentDTO> searchAll(){
+	public Map<String, List<DiaryContentDTO>> searchAll(){
 		
 		return memory.getAllDiaryContentMemory();
 	}

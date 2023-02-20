@@ -2,18 +2,20 @@ package bean.vo;
 
 public class DiaryContentVO{
 
-	private int count;
+	private String count;
 	private String date;
-	private int projectId;
-	private int phaseId;
-	private int workId;
+	private String projectId;
+	private String phaseId;
+	private String workId;
 	private String text;
-	private double workHour;
+	private String workHour;
+	private String status;
 	
 	
 	public DiaryContentVO() {
 	}
-	public DiaryContentVO(int count, String date, int projectId, int phaseId, int workId, String text, double workHour) {
+	public DiaryContentVO(String count, String date, String projectId, String phaseId, String workId, String text,
+			String workHour, String status) {
 		this.count = count;
 		this.date = date;
 		this.projectId = projectId;
@@ -21,50 +23,59 @@ public class DiaryContentVO{
 		this.workId = workId;
 		this.text = text;
 		this.workHour = workHour;
+		this.status = status;
 	}
 	
-	public int getCount() {
+	
+	public String getCount() {
 		return count;
 	}
 	public String getDate() {
 		return date;
 	}
-	public int getProjectId() {
+	public String getProjectId() {
 		return projectId;
 	}
-	public int getPhaseId() {
+	public String getPhaseId() {
 		return phaseId;
 	}
-	public int getWorkId() {
+	public String getWorkId() {
 		return workId;
 	}
 	public String getText() {
 		return text;
 	}
-	public double getWorkHour() {
+	public String getWorkHour() {
 		return workHour;
+	}
+	public String getStatus() {
+		return status;
 	}
 	
 	
-	public void setCount(int count) {
+	public void setCount(String count) {
 		this.count = count;
 	}
 	public void setDate(String date) {
 		this.date = date;
 	}
-	public void setProjectId(int projectId) {
+	public void setProjectId(String projectId) {
 		this.projectId = projectId;
 	}
-	public void setPhaseId(int phaseId) {
+	public void setPhaseId(String phaseId) {
 		this.phaseId = phaseId;
 	}
-	public void setWorkId(int workId) {
+	public void setWorkId(String workId) {
 		this.workId = workId;
 	}
 	public void setText(String text) {
 		this.text = text;
 	}
-	public void setWorkHour(double workHour) {
+	public void setWorkHour(String workHour) {
 		this.workHour = workHour;
 	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
 }
