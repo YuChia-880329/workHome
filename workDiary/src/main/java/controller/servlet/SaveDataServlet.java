@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import bean.dto.DiaryContentDTO;
 import bean.vo.DiaryContentVO;
 import enumeration.DiaryContentStatus;
-import executor.transform.DiaryContentVOToDiaryContentDTOExecutor;
+import executor.transform.DiaryContentVOAndDiaryContentDTOTransformer;
 import memory.SavedDiaryContentMemoryDealer;
 
 @SuppressWarnings("serial")
@@ -30,7 +30,7 @@ public class SaveDataServlet extends HttpServlet {
 	private static final String REDIRECT_HOMEPAGE_URL = "startUp";
 	
 	private SavedDiaryContentMemoryDealer savedDiaryContentMemoryDealer = SavedDiaryContentMemoryDealer.getInstance();
-	private DiaryContentVOToDiaryContentDTOExecutor diaryContentVOToDiaryContentDTOExecutor = DiaryContentVOToDiaryContentDTOExecutor.getInstance();
+	private DiaryContentVOAndDiaryContentDTOTransformer diaryContentVOToDiaryContentDTOExecutor = DiaryContentVOAndDiaryContentDTOTransformer.getInstance();
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		

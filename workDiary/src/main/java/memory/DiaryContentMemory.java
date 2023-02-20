@@ -1,12 +1,13 @@
 package memory;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import bean.dto.DiaryContentDTO;
 
-public class DiaryContentMemory {
+class DiaryContentMemory {
 
 	private Map<String, Set<DiaryContentMemoryObj>> savedDiaryContentMemory;
 	private Map<String, Set<DiaryContentMemoryObj>> sentDiaryContentMemory;
@@ -38,6 +39,16 @@ public class DiaryContentMemory {
 	}
 	void saveInSavedDiaryContentMemory(String date, Set<DiaryContentMemoryObj> set) {
 		
+		Set<DiaryContentMemoryObj> objs = savedDiaryContentMemory.get(date);
+		
+		if(objs == null)
+			objs = new HashSet<>();
+		
+		objs.addAll(set);
+		savedDiaryContentMemory.put(date, set);
+	}
+	void updateInSavedDiaryContentMemory(String date, Set<DiaryContentMemoryObj> set) {
+		
 		savedDiaryContentMemory.put(date, set);
 	}
 	void deleteInSavedDiaryContentMemory(String date) {
@@ -59,6 +70,16 @@ public class DiaryContentMemory {
 		return sentDiaryContentMemory.get(date);
 	}
 	void saveInSentDiaryContentMemory(String date, Set<DiaryContentMemoryObj> set) {
+		
+		Set<DiaryContentMemoryObj> objs = sentDiaryContentMemory.get(date);
+		
+		if(objs == null)
+			objs = new HashSet<>();
+		
+		objs.addAll(set);
+		sentDiaryContentMemory.put(date, set);
+	}
+	void updateInSentDiaryContentMemory(String date, Set<DiaryContentMemoryObj> set) {
 		
 		sentDiaryContentMemory.put(date, set);
 	}
@@ -82,6 +103,16 @@ public class DiaryContentMemory {
 	}
 	void saveInSentCloneDiaryContentMemory(String date, Set<DiaryContentMemoryObj> set) {
 		
+		Set<DiaryContentMemoryObj> objs = sentDiaryContentMemoryClone.get(date);
+		
+		if(objs == null)
+			objs = new HashSet<>();
+		
+		objs.addAll(set);
+		sentDiaryContentMemoryClone.put(date, set);
+	}
+	void updateInSentCloneDiaryContentMemory(String date, Set<DiaryContentMemoryObj> set) {
+		
 		sentDiaryContentMemoryClone.put(date, set);
 	}
 	void deleteInSentCloneDiaryContentMemory(String date) {
@@ -94,6 +125,16 @@ public class DiaryContentMemory {
 	}
 	
 
+	
+	void resetMemory(String date, boolean forSure) {
+		
+		if(forSure) {
+			
+			savedDiaryContentMemory.put(date, new HashSet<>());
+			sentDiaryContentMemory.put(date, new HashSet<>()); 
+			sentDiaryContentMemoryClone.put(date, new HashSet<>()); 
+		}
+	}
 }
 
 class DiaryContentMemoryObj{

@@ -1,8 +1,12 @@
 package memory;
 
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import bean.dto.DiaryContentDTO;
 
-public class MemoryObjAndDTOTransformer {
+class MemoryObjAndDTOTransformer {
 
 	private static final MemoryObjAndDTOTransformer INSTANCE = new MemoryObjAndDTOTransformer();
 	
@@ -27,13 +31,13 @@ public class MemoryObjAndDTOTransformer {
 	}
 	
 	
-	DiaryContentDTO memoryObjToDto(DiaryContentMemoryObj obj) {
+	List<DiaryContentDTO> memoryObjSetToDtoList(Set<DiaryContentMemoryObj> objList) {
 		
-		return obj.getDiaryContentDTO();
+		return objList.stream().map(obj -> memoryObjToDto(obj)).collect(Collectors.toList());
 	}
 	
-	DiaryContentMemoryObj dtoToMemoryObj(DiaryContentDTO dto) {
+	Set<DiaryContentMemoryObj> dtoListToMemoryObjSet(List<DiaryContentDTO> dtoList) {
 		
-		return new DiaryContentMemoryObj(dto);
+		return dtoList.stream().map(dto -> dtoToMemoryObj(dto)).collect(Collectors.toSet());
 	}
 }
