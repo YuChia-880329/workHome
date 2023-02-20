@@ -1,10 +1,7 @@
 	
-	function diaryProjectToDefault(projectId){
-
-		var diaryProjectDefault = '<option value="0" >請選擇</option>';
-		var diaryProject = $('#' + projectId);
-		diaryProject.empty();
-		diaryProject.html(diaryProjectDefault);
+	function diaryProjectToDefault(proId){
+		
+		$('#' + proId).val(0);
 	}
 	function diaryPhaseToDefault(phaseId){
 
@@ -28,7 +25,4 @@
 
 		$('#' + hourId).val('0.0');
 	}
-	function diaryStatusToDefault(statusId){
-
-		$('#' + statusId).val('1');
-	}
+	

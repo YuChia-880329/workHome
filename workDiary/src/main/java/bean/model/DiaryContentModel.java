@@ -3,35 +3,29 @@ package bean.model;
 public class DiaryContentModel {
 
 	private int id;
-	private int employeeId;
 	private String date;
 	private int projectId;
 	private int phaseId;
 	private int workId;
+	private String text;
 	private double workHour;
-	private int status;
 	
 	
 	public DiaryContentModel() {
 	}
-	public DiaryContentModel(int id, int employeeId, String date, int projectId, int phaseId, int workId,
-			double workHour, int status) {
+	public DiaryContentModel(int id, String date, int projectId, int phaseId, int workId, String text, double workHour) {
 		this.id = id;
-		this.employeeId = employeeId;
 		this.date = date;
 		this.projectId = projectId;
 		this.phaseId = phaseId;
 		this.workId = workId;
+		this.text = text;
 		this.workHour = workHour;
-		this.status = status;
 	}
-	
-	
+
+
 	public int getId() {
 		return id;
-	}
-	public int getEmployeeId() {
-		return employeeId;
 	}
 	public String getDate() {
 		return date;
@@ -45,19 +39,16 @@ public class DiaryContentModel {
 	public int getWorkId() {
 		return workId;
 	}
+	public String getText() {
+		return text;
+	}
 	public double getWorkHour() {
 		return workHour;
 	}
-	public int getStatus() {
-		return status;
-	}
-	
-	
+
+
 	public void setId(int id) {
 		this.id = id;
-	}
-	public void setEmployeeId(int employeeId) {
-		this.employeeId = employeeId;
 	}
 	public void setDate(String date) {
 		this.date = date;
@@ -71,10 +62,10 @@ public class DiaryContentModel {
 	public void setWorkId(int workId) {
 		this.workId = workId;
 	}
+	public void setText(String text) {
+		this.text = text;
+	}
 	public void setWorkHour(double workHour) {
 		this.workHour = workHour;
-	}
-	public void setStatus(int status) {
-		this.status = status;
 	}
 }

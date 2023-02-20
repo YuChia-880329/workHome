@@ -18,6 +18,10 @@
 		<servlet-name>phaseChangeAsyncServlet</servlet-name>
 		<servlet-class>controller.servlet.async.PhaseChangeAsyncServlet</servlet-class>
 	</servlet>
+	<servlet>
+		<servlet-name>saveDataServlet</servlet-name>
+		<servlet-class>controller.servlet.SaveDataServlet</servlet-class>
+	</servlet>
 
 	
 	<!-- servlet mapping -->
@@ -32,6 +36,10 @@
 	<servlet-mapping>
 		<servlet-name>phaseChangeAsyncServlet</servlet-name>
 		<url-pattern>/phaseChange</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>saveDataServlet</servlet-name>
+		<url-pattern>/save</url-pattern>
 	</servlet-mapping>
 	
 </web-app>

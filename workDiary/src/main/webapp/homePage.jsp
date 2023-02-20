@@ -18,6 +18,8 @@
 		<script src="js\workDate.js"></script>
 		<script src="js\hourChange.js"></script>
 		<script src="js\selectDiary.js"></script>
+		<script src="js\deleteClearAndReset.js"></script>
+		<script src="js\saveDiary.js"></script>
 	
 		<style type="text/css">
 			div.ui-datepicker {
@@ -26,19 +28,22 @@
 		</style>
 		<script type="text/javascript">
 
+			// id
 			let diaryIdPrefixes = {
 				'projectIdPrefix' : 'diary_project_',
 				'phaseIdPrefix' : 'diary_phase_',
 				'workIdPrefix' : 'diary_work_',
 				'textIdPrefix' : 'diary_text_',
 				'hourIdPrefix' : 'diary_hour_',
-				'statusIdPrefix' : 'diary_status_',
 				'trIdPrefix' : 'diary_tr_'
 			}
 
 			let createBtnId = 'create_btn';
 			let deleteBtnId = 'delete_btn';
 			let clearBtnId = 'clear_btn';
+			let resetBtnId = 'reset_btn';
+			
+			let saveBtnId = 'save_btn';
 			
 			let dateTextDivId = 'date_text_div';
 			let workDateDivId = 'work_date_div';
@@ -47,6 +52,18 @@
 
 			let diaryTemplateId = 'diary_tmpl';
 			let diaryBodyId = 'diary_body';
+			let diaryTrStatusTextId = 'diary_tr_status_text';
+			
+			// data
+			let trStatusDataName = 'trStatus';
+			let diaryCountDataName = 'diaryCount';
+			let seletedTrDataName = 'seletedTr';
+			
+			let trStatusMeaning = {
+				'status1' : '未送交',
+				'status2' : '已儲存',
+				'status3' : '已送交'
+			};
 			
 			let diaryCount = 1;
 			
@@ -54,12 +71,19 @@
 
 				initWorkDate(workDateDivId, dateTextDivId);
 				$('#' + createBtnId).click(createBtnClicked);
+				$('#' + diaryBodyId).data(seletedTrDataName, '');
+				
+				$('#' + deleteBtnId).click(deleteBtnClicked);
+				$('#' + clearBtnId).click(clearBtnClicked);
+				$('#' + resetBtnId).click(resetBtnClicked);
+				
+				$('#' + saveBtnId).click(saveBtnClicked);
 
 			});
 
 			function createBtnClicked(){
 
-				var diaryContent = getDiaryContent(diaryTemplateId, diaryCount, diaryIdPrefixes);
+				var diaryContent = getDiaryContent(diaryTemplateId, diaryCount, diaryIdPrefixes, trStatusDataName, diaryCountDataName);
 				$('#' + diaryBodyId).append(diaryContent);
 
 				var diaryProjectId = diaryIdPrefixes.projectIdPrefix + diaryCount;
@@ -68,6 +92,8 @@
 				var diaryHourId = diaryIdPrefixes.hourIdPrefix + diaryCount;
 				var diaryTrId = diaryIdPrefixes.trIdPrefix + diaryCount;
 
+				$('#' + diaryTrId).data(trStatusDataName, '1');
+				$('#' + diaryTrId).data(diaryCountDataName, diaryCount);
 				$('#' + diaryProjectId).change(function(){
 					diaryProjectChanged(diaryProjectId, diaryPhaseId, diaryWorkId);
 				});
@@ -75,7 +101,7 @@
 					diaryPhaseChanged(diaryPhaseId, diaryWorkId);
 				});
 				diaryHourInputSetting(diaryHourId, workHourTextSpanId);
-				selectDiaryTrSetting(diaryTrId, selectedDiaryTrIdInputId, deleteBtnId, clearBtnId);
+				selectDiaryTrSetting(diaryTrId, diaryBodyId, deleteBtnId, clearBtnId, seletedTrDataName);
 				mouseenterChangeColor(diaryTrId);
 				mouseleaveChangeColor(diaryTrId);
 				
@@ -98,6 +124,35 @@
 				var dataJson = phaseChangedAjax(phaseValue, diaryWorkId);
 			}
 			
+			function deleteBtnClicked(){
+				
+				var selectedTrId = $('#' + diaryBodyId).data(seletedTrDataName);
+				var selectedTrCount = $('#' + selectedTrId).data(diaryCountDataName);
+				var hour = $('#' + diaryIdPrefixes.hourIdPrefix + selectedTrCount).val();
+					
+				deleteDiaryTr(selectedTrId, diaryBodyId, trStatusDataName, seletedTrDataName, 
+						trStatusMeaning, deleteBtnId, clearBtnId, diaryTrStatusTextId,
+						workHourTextSpanId, hour, str1MinusStr2);
+			}
+			function clearBtnClicked(){
+				
+				var selectedTrId = $('#' + diaryBodyId).data(seletedTrDataName);
+				var selectedTrCount = $('#' + selectedTrId).data(diaryCountDataName);
+				var hour = $('#' + diaryIdPrefixes.hourIdPrefix + selectedTrCount).val();
+				
+				clearDiaryTr(selectedTrId, diaryIdPrefixes, trStatusDataName, diaryCountDataName, trStatusMeaning, diaryTrStatusTextId,
+						diaryProjectToDefault, diaryPhaseToDefault, diaryWorkToDefault, diaryTextToDefault, diaryHourToDefault, 
+						workHourTextSpanId, hour, str1MinusStr2);
+			}
+			function resetBtnClicked(){
+				
+				resetDiary(diaryBodyId, diaryTrStatusTextId, workHourTextSpanId, trStatusMeaning, deleteBtnId, clearBtnId, diaryBodyId, seletedTrDataName);
+			}
+			
+			function saveBtnClicked(){
+				
+				saveAjax(diaryBodyId, dateTextDivId, diaryCountDataName, diaryIdPrefixes, trStatusDataName);
+			}
 			
 		</script>
 	
@@ -136,13 +191,11 @@
 							</td>
 							<td bgcolor="#9999FF" height="23">狀態：</td>
 							<td height="23">
-								<font color="#FF0000">
-									<span>未送交</span>
-								</font>
+								<span id="diary_tr_status_text" style="color: #FF0000">未送交</span>
 							</td>
 							<td bgcolor="#9999FF" height="23">本日工時總計：</td>
 							<td colspan="3" height="23">
-								<span id="work_hour_text_span" style="margin-left: 5px;margin-right: 5px;">0.0</span>小時
+								<span id="work_hour_text_span" style="margin-left: 5px;margin-right: 5px;">0</span>小時
 							</td>
 						</tr>
 						<tr>
@@ -151,7 +204,7 @@
 									<input type="button" id="create_btn" value="新增" />
 									<input type="button" id="delete_btn" value="刪除" disabled />
 									<input type="button" id="clear_btn" value="清除" disabled />
-									<input type="button" value="重設" />
+									<input type="button" id="reset_btn" value="重設" />
 								</div>
 							</td>
 						</tr>
@@ -189,14 +242,13 @@
 							<tr>
 								<td colspan="6">
 									<div align="center">
-										<input type="button" value="儲存" />
+										<input type="button" id="save_btn" value="儲存" />
 										<input type="button" value="送交" />
 									</div>
 								</td>
 							</tr>
 						</tfoot>
 					</table>
-					<input type="hidden" id="selected_diary_tr_id_input" value=""/>
 				</td>
 			</tr>
 		</table>
@@ -232,7 +284,6 @@
 					<input type="text" id="diary_hour_tmpl" size="1"  value="0.0">
 				</td>
 			</tr>
-			<input type="hidden" id="diary_status_tmpl" size="1" value="1" />
 		</template>
 	</body>
 	

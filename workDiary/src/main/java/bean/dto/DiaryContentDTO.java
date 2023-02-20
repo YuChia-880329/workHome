@@ -1,33 +1,33 @@
-package bean.vo;
+package bean.dto;
 
-public class DiaryContentVO{
+import enumeration.DiaryContentStatus;
 
-	private int count;
-	private String date;
+public class DiaryContentDTO {
+
+	private int id;
 	private int projectId;
 	private int phaseId;
 	private int workId;
 	private String text;
 	private double workHour;
+	private DiaryContentStatus status;
 	
-	
-	public DiaryContentVO() {
+	public DiaryContentDTO() {
 	}
-	public DiaryContentVO(int count, String date, int projectId, int phaseId, int workId, String text, double workHour) {
-		this.count = count;
-		this.date = date;
+	public DiaryContentDTO(int id, int projectId, int phaseId, int workId, String text, double workHour,
+			DiaryContentStatus status) {
+		this.id = id;
 		this.projectId = projectId;
 		this.phaseId = phaseId;
 		this.workId = workId;
 		this.text = text;
 		this.workHour = workHour;
+		this.status = status;
 	}
 	
-	public int getCount() {
-		return count;
-	}
-	public String getDate() {
-		return date;
+	
+	public int getId() {
+		return id;
 	}
 	public int getProjectId() {
 		return projectId;
@@ -44,13 +44,13 @@ public class DiaryContentVO{
 	public double getWorkHour() {
 		return workHour;
 	}
-	
-	
-	public void setCount(int count) {
-		this.count = count;
+	public DiaryContentStatus getStatus() {
+		return status;
 	}
-	public void setDate(String date) {
-		this.date = date;
+	
+	
+	public void setId(int id) {
+		this.id = id;
 	}
 	public void setProjectId(int projectId) {
 		this.projectId = projectId;
@@ -66,5 +66,8 @@ public class DiaryContentVO{
 	}
 	public void setWorkHour(double workHour) {
 		this.workHour = workHour;
+	}
+	public void setStatus(DiaryContentStatus status) {
+		this.status = status;
 	}
 }

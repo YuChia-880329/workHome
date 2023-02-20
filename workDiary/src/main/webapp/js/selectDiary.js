@@ -5,30 +5,37 @@
 	let bgColorProperty = 'background-color';
 	
 	
-	function selectDiaryTrSetting(diaryTrId, selectedDiaryTrIdInputId, deleteBtnId, clearBtnId){
+	function selectDiaryTrSetting(diaryTrId, diaryBodyId, deleteBtnId, clearBtnId, seletedTrDataName){
 		
 		$('#' + diaryTrId).click(function(){
 			
-			selectDiaryTrHandler(diaryTrId, selectedDiaryTrIdInputId);
-			$('#' + deleteBtnId).prop('disabled', false);
-			$('#' + clearBtnId).prop('disabled', false);
+			var originalSeletedTrId = $('#' + diaryBodyId).data(seletedTrDataName);
+			
+			if(originalSeletedTrId != diaryTrId){
+				selectDiaryTrHandler(diaryTrId, diaryBodyId, seletedTrDataName);
+			}
+			
+			if(originalSeletedTrId == ''){
+				$('#' + deleteBtnId).prop('disabled', false);
+				$('#' + clearBtnId).prop('disabled', false);
+			}
 		});
 	}
-	function selectDiaryTrHandler(diaryTrId, selectedDiaryTrIdInputId){
+	function selectDiaryTrHandler(diaryTrId, diaryBodyId, seletedTrDataName){
 		
 		clickColorHandler(diaryTrId);
 		
-		var selectedDiaryTrIdInput = $('#' + selectedDiaryTrIdInputId);
-		var originalSelectedDiaryTrId = selectedDiaryTrIdInput.val();
-		
-		if('' != originalSelectedDiaryTrId){
+
+		var diaryBody = $('#' + diaryBodyId);
+		var seletedTrDataName = 'seletedTr';
+		var seletedTrId = diaryBody.data(seletedTrDataName);
+		if(seletedTrId != ''){
 			
-			$('#' + originalSelectedDiaryTrId).css(bgColorProperty, 'white');
-			mouseenterChangeColor(originalSelectedDiaryTrId);
-			mouseleaveChangeColor(originalSelectedDiaryTrId);
+			$('#' + seletedTrId).css(bgColorProperty, 'white');
+			mouseenterChangeColor(seletedTrId);
+			mouseleaveChangeColor(seletedTrId);
 		}
-		
-		selectedDiaryTrIdInput.val(diaryTrId);
+		diaryBody.data(seletedTrDataName, diaryTrId);
 	}
 	
 	

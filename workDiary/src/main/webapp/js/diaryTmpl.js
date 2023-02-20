@@ -2,13 +2,14 @@
 	function getDiaryContent(tmplId, diaryCount, diaryIdPrefixes){
 		
 		var diaryTmplClone = getTmplClone(tmplId);
-		setDiaryProjId(diaryTmplClone, diaryCount, diaryIdPrefixes);
-		setDiaryPhaseId(diaryTmplClone, diaryCount, diaryIdPrefixes);
-		setDiaryWorkId(diaryTmplClone, diaryCount, diaryIdPrefixes);
-		setDiaryTextId(diaryTmplClone, diaryCount, diaryIdPrefixes);
-		setDiaryHourId(diaryTmplClone, diaryCount, diaryIdPrefixes);
-		setDiaryStatusId(diaryTmplClone, diaryCount, diaryIdPrefixes);
+		setDiaryProjIdName(diaryTmplClone, diaryCount, diaryIdPrefixes);
+		setDiaryPhaseIdName(diaryTmplClone, diaryCount, diaryIdPrefixes);
+		setDiaryWorkIdName(diaryTmplClone, diaryCount, diaryIdPrefixes);
+		setDiaryTextIdName(diaryTmplClone, diaryCount, diaryIdPrefixes);
+		setDiaryHourIdName(diaryTmplClone, diaryCount, diaryIdPrefixes);
 		setDiaryTrId(diaryTmplClone, diaryCount, diaryIdPrefixes);
+		
+		setTrData(diaryTmplClone, diaryCount, diaryIdPrefixes);
 		
 		var diaryHtml = diaryTmplClone.html();
 		return diaryHtml;
@@ -16,36 +17,37 @@
 	
 	function getTmplClone(tmplId){
 		
-		var diaryTmpl = $('template#' + tmplId);
+		var diaryTmpl = $('#' + tmplId);
 		var diaryTmplClone = diaryTmpl.clone();
 		return diaryTmplClone;
 	}
 	
-	function setDiaryProjId(diaryTmplClone, diaryCount, diaryIdPrefixes){
+	function setDiaryProjIdName(diaryTmplClone, diaryCount, diaryIdPrefixes){
 		
 		setDiaryId(diaryTmplClone, diaryCount, diaryIdPrefixes.projectIdPrefix);
+		setDiaryName(diaryTmplClone, diaryCount, diaryIdPrefixes.projectIdPrefix)
 	}
-	function setDiaryPhaseId(diaryTmplClone, diaryCount, diaryIdPrefixes){
+	function setDiaryPhaseIdName(diaryTmplClone, diaryCount, diaryIdPrefixes){
 		
 		setDiaryId(diaryTmplClone, diaryCount, diaryIdPrefixes.phaseIdPrefix);
+		setDiaryName(diaryTmplClone, diaryCount, diaryIdPrefixes.phaseIdPrefix)
 	}
-	function setDiaryWorkId(diaryTmplClone, diaryCount, diaryIdPrefixes){
+	function setDiaryWorkIdName(diaryTmplClone, diaryCount, diaryIdPrefixes){
 		
 		setDiaryId(diaryTmplClone, diaryCount, diaryIdPrefixes.workIdPrefix);
+		setDiaryName(diaryTmplClone, diaryCount, diaryIdPrefixes.workIdPrefix)
 	}
-	function setDiaryTextId(diaryTmplClone, diaryCount, diaryIdPrefixes){
+	function setDiaryTextIdName(diaryTmplClone, diaryCount, diaryIdPrefixes){
 		
 		setDiaryId(diaryTmplClone, diaryCount, diaryIdPrefixes.textIdPrefix);
+		setDiaryName(diaryTmplClone, diaryCount, diaryIdPrefixes.textIdPrefix)
 	}
-	function setDiaryHourId(diaryTmplClone, diaryCount, diaryIdPrefixes){
+	function setDiaryHourIdName(diaryTmplClone, diaryCount, diaryIdPrefixes){
 		
 		setDiaryId(diaryTmplClone, diaryCount, diaryIdPrefixes.hourIdPrefix);
+		setDiaryName(diaryTmplClone, diaryCount, diaryIdPrefixes.hourIdPrefix)
 	}
-	function setDiaryStatusId(diaryTmplClone, diaryCount, diaryIdPrefixes){
-		
-		setDiaryId(diaryTmplClone, diaryCount, diaryIdPrefixes.statusIdPrefix);
-	}
-	
+
 	function setDiaryTrId(diaryTmplClone, diaryCount, diaryIdPrefixes){
 		
 		setDiaryId(diaryTmplClone, diaryCount, diaryIdPrefixes.trIdPrefix);
@@ -56,4 +58,18 @@
 		var id = idPrefix + diaryCount;
 		var target = diaryTmplClone[0].content.querySelector('#' + idPrefix + 'tmpl');
 		$(target).attr('id', id);
+	}
+	function setDiaryName(diaryTmplClone, diaryCount, idPrefix){
+		
+		var id = idPrefix + diaryCount;
+		var name = id;
+		var target = diaryTmplClone[0].content.querySelector('#' + id);
+		$(target).attr('name', name);
+	}
+	
+	
+	function setTrData(diaryTmplClone, diaryCount, diaryIdPrefixes){
+		
+		var diaryTrElement = diaryTmplClone[0].content.querySelector('#' + diaryIdPrefixes.trIdPrefix + diaryCount);
+		var diaryTr = $(diaryTrElement);
 	}
