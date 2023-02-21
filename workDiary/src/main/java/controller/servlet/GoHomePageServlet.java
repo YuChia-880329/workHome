@@ -23,7 +23,7 @@ public class GoHomePageServlet extends HttpServlet {
 
 	
 	// attribute
-	private static final String REQ_ATTR_PROJECT_VOS = "projectVOs";
+	private static final String REQ_ATTR_PROJECT_VOS = "projectVOsJson";
 	private static final String REQ_ATTR_DIARY_CONTENT_VOS = "diaryContentVOsJson";
 	
 	
@@ -40,7 +40,7 @@ public class GoHomePageServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
-		req.setAttribute(REQ_ATTR_PROJECT_VOS, transformer.modelListToVOList(projectModelDAO.searchAll()));
+		req.setAttribute(REQ_ATTR_PROJECT_VOS, gson.toJson(transformer.modelListToVOList(projectModelDAO.searchAll())));
 		req.setAttribute(REQ_ATTR_DIARY_CONTENT_VOS, gson.toJson(homeDiaryContentPrepareExecutor.getDiaryVOsFromMemory()));
 		
 		req.getRequestDispatcher(FORWARD_URL).forward(req, resp);

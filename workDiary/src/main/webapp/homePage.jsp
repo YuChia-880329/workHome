@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html>
 
@@ -12,9 +11,11 @@
 		<script src="js\jquery-3.6.3.min.js"></script>
 		<script src="js\jquery-ui.min.js"></script>
 		
+		<script src="js\variables.js"></script>
 		<script src="js\classDefine.js"></script>
+		
+		
 		<script src="js\startUp.js"></script>
-		<script src="js\diaryContentChange.js"></script>
 		<script src="js\diaryToDefault.js"></script>
 		<script src="js\diaryTmpl.js"></script>
 		<script src="js\workDate.js"></script>
@@ -30,46 +31,8 @@
 		</style>
 		<script type="text/javascript">
 
-			// id
-/*			let diaryIdPrefixes = {
-				'projectIdPrefix' : 'diary_project_',
-				'phaseIdPrefix' : 'diary_phase_',
-				'workIdPrefix' : 'diary_work_',
-				'textIdPrefix' : 'diary_text_',
-				'hourIdPrefix' : 'diary_hour_',
-				'trIdPrefix' : 'diary_tr_'
-			}*/
-
-			let createBtnId = 'create_btn';
-			let deleteBtnId = 'delete_btn';
-			let clearBtnId = 'clear_btn';
-			let resetBtnId = 'reset_btn';
-			
-			let saveBtnId = 'save_btn';
-			
-			let dateTextDivId = 'date_text_div';
-			let workDateDivId = 'work_date_div';
-			let workHourTextSpanId = 'work_hour_text_span';
-			let selectedDiaryTrIdInputId = 'selected_diary_tr_id_input';
-
-			let diaryTemplateId = 'diary_tmpl';
-			let diaryBodyId = 'diary_body';
-			let diaryTrStatusTextId = 'diary_tr_status_text';
-			
-			// data
-			let trStatusDataName = 'trStatus';
-			let diaryCountDataName = 'diaryCount';
-			let seletedTrDataName = 'seletedTr';
-			
-			let trStatusMeaning = {
-				'status1' : '未送交',
-				'status2' : '已儲存',
-				'status3' : '已送交'
-			};
 			
 			
-			let startUpDiaryContentJson = '${diaryContentVOsJson}';
-			let startUpDiaryContent = JSON.parse(startUpDiaryContentJson);
 			let diaryCount = 1;
 			
 			$(document).ready(function () {
@@ -225,7 +188,7 @@
 			</tr>
 			<tr>
 				<td width="200" valign="top">
-					<div id="work_date_div"></div>
+					<div id="calendar_div"></div>
 				</td>
 				<td width="800" valign="top" colspan="2">
 					<table border="1" width="100%" border-color="#0000FF">
@@ -247,7 +210,7 @@
 								<td colspan="6">
 									<div align="center">
 										<input type="button" id="save_btn" value="儲存" />
-										<input type="button" value="送交" />
+										<input type="button" id="sent_btn" value="送交" />
 									</div>
 								</td>
 							</tr>
@@ -263,10 +226,6 @@
 				<td>
 					<select id="diary_project_tmpl">
 						<option value="0" >請選擇</option>
-						
-						<c:forEach var="projectVO" items="${projectVOs}">
-							<option value="${projectVO.projectId }">${projectVO.projectName }</option>
-						</c:forEach>
 					</select>
 				</td>
 				<td>

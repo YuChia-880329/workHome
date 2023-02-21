@@ -1,27 +1,21 @@
 
-	let diaryIdPrefixes = {
-		'projectIdPrefix' : 'diary_project_',
-		'phaseIdPrefix' : 'diary_phase_',
-		'workIdPrefix' : 'diary_work_',
-		'textIdPrefix' : 'diary_text_',
-		'hourIdPrefix' : 'diary_hour_',
-		'trIdPrefix' : 'diary_tr_'
-	}
-	
-	
-	class DiaryProject{
+	class DiaryObj{
 		
-		onChange;
+		count;
+		value;
+		idPrefix;
+		tr;
 		
-		constructor(count, value){
+		constructor(count, value, idPrefix){
 			
 			this.count = count;
 			this.value = value;
+			this.idPrefix = idPrefix;
 		}
 		
 		get id(){
 			
-			return diaryIdPrefixes.projectIdPrefix + this.count;
+			return this.idPrefix + this.count;
 		}
 		get jquery(){
 			
@@ -29,106 +23,109 @@
 		}
 		
 	}
-	class DiaryPhase{
+	class DiarySelectObject extends DiaryObj{
 		
-		onChange;
+		options;
 		
-		constructor(count, value){
+		constructor(count, value, idPrefix){
 			
-			this.count = count;
-			this.value = value;
+			super(count, value, idPrefix);
 		}
 		
-		get id(){
+		addOption(option){
 			
-			return diaryIdPrefixes.phaseIdPrefix + this.count;
+			options[options.length] = option;
 		}
-		get jquery(){
+		optionForEach(forEachFctn){
 			
-			return $('#' + this.id);
+			options.forEach(forEachFctn);
 		}
 		
+		static Option = class{
+			
+			constructor(value, name){
+				
+				this.value = value;
+				this.name = name;
+			}
+			
+			get html(){
+				
+				return '<option value="' + this.value + '">' + this.name + '</option>';
+			}
+		}
 	}
-	class DiaryWork{
+	class DiaryProject extends DiarySelectObject{
 		
 		constructor(count, value){
 			
-			this.count = count;
-			this.value = value;
+			super(count, value, diaryProjectIdPrefix);
 		}
-		
-		get id(){
-			
-			return diaryIdPrefixes.workIdPrefix + this.count;
-		}
-		get jquery(){
-			
-			return $('#' + this.id);
-		}
-		
 	}
-	class DiaryText{
+	class DiaryPhase extends DiarySelectObject{
 		
 		constructor(count, value){
 			
-			this.count = count;
-			this.value = value;
+			super(count, value, diaryPhaseIdPrefix);
 		}
-		
-		get id(){
-			
-			return diaryIdPrefixes.textIdPrefix + this.count;
-		}
-		get jquery(){
-			
-			return $('#' + this.id);
-		}
-		
 	}
-	class DiaryHour{
-		
-		onFocus;
-		onFocusOut;
+	class DiaryWork extends DiarySelectObject{
 		
 		constructor(count, value){
 			
-			this.count = count;
-			this.value = value;
+			super(count, value, diaryWorkIdPrefix);
 		}
+	}
+	class DiaryText extends DiaryObj{
 		
-		get id(){
+		constructor(count, value){
 			
-			return diaryIdPrefixes.hourIdPrefix + this.count;
+			super(count, value, diaryTextIdPrefix);
 		}
-		get jquery(){
+	}
+	class DiaryHour extends DiaryObj{
+		
+		constructor(count, value){
 			
-			return $('#' + this.id);
+			super(count, value, diaryHourIdPrefix);
 		}
 	}
 	
 	class DiaryTr{
 		
-		onMouseEnter;
-		onMouseLeave;
+		count;
+		project;
+		phase;
+		work;
+		text;
+		hour;
+		status;
+		body;
 		
 		constructor(count, projectValue, phaseValue, workValue, textValue, hourValue, status){
 			
+			this.count = count;
 			this.project = new DiaryProject(count, projectValue);
-			this.phase = new DiaryProject(count, phaseValue);
-			this.work = new DiaryProject(count, workValue);
-			this.text = new DiaryProject(count, textValue);
-			this.hour = new DiaryProject(count, hourValue);
+			this.project.tr = this;
+			this.phase = new DiaryPhase(count, phaseValue);
+			this.phase.tr = this;
+			this.work = new DiaryWork(count, workValue);
+			this.work.tr = this;
+			this.text = new DiaryText(count, textValue);
+			this.text.tr = this;
+			this.hour = new DiaryHour(count, hourValue);
+			this.hour.tr = this;
 			this.status = status;
 		}
 		
 		get id(){
 			
-			return diaryIdPrefixes.trIdPrefix + this.count;
+			return diaryTrIdPrefix + this.count;
 		}
 		get jquery(){
 			
 			return $('#' + this.id);
-		} 
+		}
 		
 		static getDiaryTrByJson(trJson){
 			
@@ -140,15 +137,29 @@
 	
 	class DiaryBody{
 		
-		constructor(diaryTrs){
+		trs;
+		
+		constructor(trs){
 			
-			this.diaryTrs = diaryTrs;
+			this.trs = trs;
+			this.trs.forEach(function(currentValue){
+				
+				currentValue.body = this;
+			});
 			this.selectedId = '';
 		}
 		
+		addTr(tr){
+			
+			trs[trs.length] = tr;
+		}
+		trForEach(forEachFctn){
+			
+			trs.forEach(forEachFctn);
+		}
 		get id(){
 			
-			return 'diary_body';
+			return diaryBodyId;
 		}
 		get jquery(){
 			
@@ -159,9 +170,14 @@
 			
 			for(var i=0; i<diaryTrs.length; i++){
 				
-				if(diaryTrs[i].id == selectedId)
-					return diaryTrs[i];
+				var diaryTr = diaryTrs[i];
+				if(diaryTr.id == selectedId)
+					return diaryTr;
 			}
 		}
 	}
+	
+	
+	let diaryBody = new DiaryBody([]);
+	
 	
