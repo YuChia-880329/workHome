@@ -7,8 +7,8 @@
 	
 	<!-- servlet -->
 	<servlet>
-		<servlet-name>startUpServlet</servlet-name>
-		<servlet-class>controller.servlet.StartUpServlet</servlet-class>
+		<servlet-name>goHomePageServlet</servlet-name>
+		<servlet-class>controller.servlet.GoHomePageServlet</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>projectChangeAsyncServlet</servlet-name>
@@ -26,8 +26,8 @@
 	
 	<!-- servlet mapping -->
 	<servlet-mapping>
-		<servlet-name>startUpServlet</servlet-name>
-		<url-pattern>/startUp</url-pattern>
+		<servlet-name>goHomePageServlet</servlet-name>
+		<url-pattern>/homePage</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>projectChangeAsyncServlet</servlet-name>
@@ -42,4 +42,10 @@
 		<url-pattern>/save</url-pattern>
 	</servlet-mapping>
 	
+	
+	
+	<!-- listener -->
+	<listener>
+		<listener-class>listener.ContextListener</listener-class>
+	</listener>
 </web-app>

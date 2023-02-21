@@ -1,5 +1,6 @@
 package memory;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -9,9 +10,9 @@ import bean.dto.DiaryContentDTO;
 
 class DiaryContentMemory {
 
-	private Map<String, Set<DiaryContentMemoryObj>> savedDiaryContentMemory;
-	private Map<String, Set<DiaryContentMemoryObj>> sentDiaryContentMemory;
-	private Map<String, Set<DiaryContentMemoryObj>> sentDiaryContentMemoryClone;
+	private Map<LocalDate, Set<DiaryContentMemoryObj>> savedDiaryContentMemory;
+	private Map<LocalDate, Set<DiaryContentMemoryObj>> sentDiaryContentMemory;
+	private Map<LocalDate, Set<DiaryContentMemoryObj>> sentDiaryContentMemoryClone;
 	
 	private static final DiaryContentMemory INSTANCE = new DiaryContentMemory();
 	
@@ -29,104 +30,85 @@ class DiaryContentMemory {
 	
 	
 	
-	Map<String, Set<DiaryContentMemoryObj>> getAllSavedDiaryContentMemory(){
+	Map<LocalDate, Set<DiaryContentMemoryObj>> getAllSavedDiaryContentMemory(){
 		
-		return savedDiaryContentMemory;
+		return getAllDiaryContentMemory(savedDiaryContentMemory);
 	}
-	Set<DiaryContentMemoryObj> getSavedDiaryContentMemoryByDate(String date){
+	Set<DiaryContentMemoryObj> getSavedDiaryContentMemoryByDate(LocalDate date){
 		
-		return savedDiaryContentMemory.get(date);
+		return getDiaryContentMemoryByDate(date, savedDiaryContentMemory);
 	}
-	void saveInSavedDiaryContentMemory(String date, Set<DiaryContentMemoryObj> set) {
+	void saveInSavedDiaryContentMemory(LocalDate date, Set<DiaryContentMemoryObj> set) {
 		
-		Set<DiaryContentMemoryObj> objs = savedDiaryContentMemory.get(date);
-		
-		if(objs == null)
-			objs = new HashSet<>();
-		
-		objs.addAll(set);
-		savedDiaryContentMemory.put(date, set);
+		saveDiaryContentMemory(date, set, savedDiaryContentMemory);
 	}
-	void updateInSavedDiaryContentMemory(String date, Set<DiaryContentMemoryObj> set) {
+	void updateInSavedDiaryContentMemory(LocalDate date, Set<DiaryContentMemoryObj> set) {
 		
-		savedDiaryContentMemory.put(date, set);
+		updateDiaryContentMemory(date, set, savedDiaryContentMemory);
 	}
-	void deleteInSavedDiaryContentMemory(String date) {
+	void deleteInSavedDiaryContentMemory(LocalDate date) {
 		
-		savedDiaryContentMemory.remove(date);
+		deleteDiaryContentMemory(date, savedDiaryContentMemory);
 	}
-	boolean containsInSaved(String date, DiaryContentMemoryObj obj) {
+	boolean containsInSaved(LocalDate date, DiaryContentMemoryObj obj) {
 		
-		return savedDiaryContentMemory.get(date).contains(obj);
+		return contains(date, obj, savedDiaryContentMemory);
 	}
 	
 	
-	Map<String, Set<DiaryContentMemoryObj>> getAllSentDiaryContentMemory(){
+	Map<LocalDate, Set<DiaryContentMemoryObj>> getAllSentDiaryContentMemory(){
 		
-		return sentDiaryContentMemory;
+		return getAllDiaryContentMemory(sentDiaryContentMemory);
 	}
-	Set<DiaryContentMemoryObj> getSentDiaryContentMemoryByDate(String date){
+	Set<DiaryContentMemoryObj> getSentDiaryContentMemoryByDate(LocalDate date){
 		
-		return sentDiaryContentMemory.get(date);
+		return getDiaryContentMemoryByDate(date, sentDiaryContentMemory);
 	}
-	void saveInSentDiaryContentMemory(String date, Set<DiaryContentMemoryObj> set) {
+	void saveInSentDiaryContentMemory(LocalDate date, Set<DiaryContentMemoryObj> set) {
 		
-		Set<DiaryContentMemoryObj> objs = sentDiaryContentMemory.get(date);
-		
-		if(objs == null)
-			objs = new HashSet<>();
-		
-		objs.addAll(set);
-		sentDiaryContentMemory.put(date, set);
+		saveDiaryContentMemory(date, set, sentDiaryContentMemory);
 	}
-	void updateInSentDiaryContentMemory(String date, Set<DiaryContentMemoryObj> set) {
+	void updateInSentDiaryContentMemory(LocalDate date, Set<DiaryContentMemoryObj> set) {
 		
-		sentDiaryContentMemory.put(date, set);
+		updateDiaryContentMemory(date, set, sentDiaryContentMemory);
 	}
-	void deleteInSentDiaryContentMemory(String date) {
+	void deleteInSentDiaryContentMemory(LocalDate date) {
 		
-		sentDiaryContentMemory.remove(date);
+		deleteDiaryContentMemory(date, sentDiaryContentMemory);
 	}
-	boolean containsInSent(String date, DiaryContentMemoryObj obj) {
+	boolean containsInSent(LocalDate date, DiaryContentMemoryObj obj) {
 		
-		return sentDiaryContentMemory.get(date).contains(obj);
+		return contains(date, obj, sentDiaryContentMemory);
 	}
 	
 	
-	Map<String, Set<DiaryContentMemoryObj>> getAllSentCloneDiaryContentMemory(){
+	Map<LocalDate, Set<DiaryContentMemoryObj>> getAllSentCloneDiaryContentMemory(){
 		
-		return sentDiaryContentMemoryClone;
+		return getAllDiaryContentMemory(sentDiaryContentMemoryClone);
 	}
-	Set<DiaryContentMemoryObj> getSentCloneDiaryContentMemoryByDate(String date){
+	Set<DiaryContentMemoryObj> getSentCloneDiaryContentMemoryByDate(LocalDate date){
 		
-		return sentDiaryContentMemoryClone.get(date);
+		return getDiaryContentMemoryByDate(date, sentDiaryContentMemoryClone);
 	}
-	void saveInSentCloneDiaryContentMemory(String date, Set<DiaryContentMemoryObj> set) {
+	void saveInSentCloneDiaryContentMemory(LocalDate date, Set<DiaryContentMemoryObj> set) {
 		
-		Set<DiaryContentMemoryObj> objs = sentDiaryContentMemoryClone.get(date);
-		
-		if(objs == null)
-			objs = new HashSet<>();
-		
-		objs.addAll(set);
-		sentDiaryContentMemoryClone.put(date, set);
+		saveDiaryContentMemory(date, set, sentDiaryContentMemoryClone);
 	}
-	void updateInSentCloneDiaryContentMemory(String date, Set<DiaryContentMemoryObj> set) {
+	void updateInSentCloneDiaryContentMemory(LocalDate date, Set<DiaryContentMemoryObj> set) {
 		
-		sentDiaryContentMemoryClone.put(date, set);
+		updateDiaryContentMemory(date, set, sentDiaryContentMemoryClone);
 	}
-	void deleteInSentCloneDiaryContentMemory(String date) {
+	void deleteInSentCloneDiaryContentMemory(LocalDate date) {
 		
-		sentDiaryContentMemoryClone.remove(date);
+		deleteDiaryContentMemory(date, sentDiaryContentMemoryClone);
 	}
-	boolean containsInSentClone(String date, DiaryContentMemoryObj obj) {
+	boolean containsInSentClone(LocalDate date, DiaryContentMemoryObj obj) {
 		
-		return sentDiaryContentMemoryClone.get(date).contains(obj);
+		return contains(date, obj, sentDiaryContentMemoryClone);
 	}
 	
-
 	
-	void resetMemory(String date, boolean forSure) {
+	void resetMemory(LocalDate date, boolean forSure) {
 		
 		if(forSure) {
 			
@@ -135,6 +117,41 @@ class DiaryContentMemory {
 			sentDiaryContentMemoryClone.put(date, new HashSet<>()); 
 		}
 	}
+
+
+
+	private Map<LocalDate, Set<DiaryContentMemoryObj>> getAllDiaryContentMemory(Map<LocalDate, Set<DiaryContentMemoryObj>> memory){
+		
+		return memory;
+	}
+	private Set<DiaryContentMemoryObj> getDiaryContentMemoryByDate(LocalDate date, Map<LocalDate, Set<DiaryContentMemoryObj>> memory){
+		
+		return memory.get(date);
+	}
+	private void saveDiaryContentMemory(LocalDate date, Set<DiaryContentMemoryObj> set, Map<LocalDate, Set<DiaryContentMemoryObj>> memory) {
+		
+		Set<DiaryContentMemoryObj> objs = memory.get(date);
+		
+		if(objs == null)
+			objs = new HashSet<>();
+		
+		objs.addAll(set);
+		memory.put(date, set);
+	}
+	private void updateDiaryContentMemory(LocalDate date, Set<DiaryContentMemoryObj> set, Map<LocalDate, Set<DiaryContentMemoryObj>> memory) {
+		
+		memory.put(date, set);
+	}
+	private void deleteDiaryContentMemory(LocalDate date, Map<LocalDate, Set<DiaryContentMemoryObj>> memory) {
+		
+		memory.remove(date);
+	}
+	private boolean contains(LocalDate date, DiaryContentMemoryObj obj, Map<LocalDate, Set<DiaryContentMemoryObj>> memory) {
+		
+		return memory.get(date).contains(obj);
+	}
+	
+	
 }
 
 class DiaryContentMemoryObj{

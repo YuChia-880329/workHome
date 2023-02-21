@@ -7,6 +7,8 @@ import bean.model.ProjectModel;
 
 public class ProjectModelDAO {
 
+	public static final String URL = "projChange";
+	
 	private List<ProjectModel> list;
 
 	private static final ProjectModelDAO INSTANCE = new ProjectModelDAO();
@@ -24,12 +26,14 @@ public class ProjectModelDAO {
 		return INSTANCE;
 	}
 	
-	public ProjectModel search(int projectId) {
-		
-		return list.get(0);
-	}
+	
 	public List<ProjectModel> searchAll(){
 		
 		return list;
+	}
+	
+	public ProjectModel search(int projectId) {
+		
+		return list.get(0);
 	}
 }

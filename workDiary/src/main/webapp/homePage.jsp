@@ -12,6 +12,8 @@
 		<script src="js\jquery-3.6.3.min.js"></script>
 		<script src="js\jquery-ui.min.js"></script>
 		
+		<script src="js\classDefine.js"></script>
+		<script src="js\startUp.js"></script>
 		<script src="js\diaryContentChange.js"></script>
 		<script src="js\diaryToDefault.js"></script>
 		<script src="js\diaryTmpl.js"></script>
@@ -29,14 +31,14 @@
 		<script type="text/javascript">
 
 			// id
-			let diaryIdPrefixes = {
+/*			let diaryIdPrefixes = {
 				'projectIdPrefix' : 'diary_project_',
 				'phaseIdPrefix' : 'diary_phase_',
 				'workIdPrefix' : 'diary_work_',
 				'textIdPrefix' : 'diary_text_',
 				'hourIdPrefix' : 'diary_hour_',
 				'trIdPrefix' : 'diary_tr_'
-			}
+			}*/
 
 			let createBtnId = 'create_btn';
 			let deleteBtnId = 'delete_btn';
@@ -65,6 +67,9 @@
 				'status3' : '已送交'
 			};
 			
+			
+			let startUpDiaryContentJson = '${diaryContentVOsJson}';
+			let startUpDiaryContent = JSON.parse(startUpDiaryContentJson);
 			let diaryCount = 1;
 			
 			$(document).ready(function () {
@@ -151,7 +156,7 @@
 			
 			function saveBtnClicked(){
 				
-				saveAjax(diaryBodyId, dateTextDivId, diaryCountDataName, diaryIdPrefixes, trStatusDataName);
+				saveDiaryContent(diaryBodyId, dateTextDivId, diaryCountDataName, diaryIdPrefixes, trStatusDataName);
 			}
 			
 		</script>
@@ -235,7 +240,6 @@
 						</thead>
 	
 						<tbody id="diary_body">
-							
 						</tbody>
 	
 						<tfoot>
@@ -253,7 +257,7 @@
 			</tr>
 		</table>
 	
-	
+		
 		<template id="diary_tmpl">
 			<tr id="diary_tr_tmpl">
 				<td>

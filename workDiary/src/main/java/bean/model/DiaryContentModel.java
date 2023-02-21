@@ -1,9 +1,11 @@
 package bean.model;
 
+import java.sql.Date;
+
 public class DiaryContentModel {
 
 	private int id;
-	private String date;
+	private Date date;
 	private int projectId;
 	private int phaseId;
 	private int workId;
@@ -13,7 +15,7 @@ public class DiaryContentModel {
 	
 	public DiaryContentModel() {
 	}
-	public DiaryContentModel(int id, String date, int projectId, int phaseId, int workId, String text, double workHour) {
+	public DiaryContentModel(int id, Date date, int projectId, int phaseId, int workId, String text, double workHour) {
 		this.id = id;
 		this.date = date;
 		this.projectId = projectId;
@@ -22,12 +24,12 @@ public class DiaryContentModel {
 		this.text = text;
 		this.workHour = workHour;
 	}
-
-
+	
+	
 	public int getId() {
 		return id;
 	}
-	public String getDate() {
+	public Date getDate() {
 		return date;
 	}
 	public int getProjectId() {
@@ -45,12 +47,12 @@ public class DiaryContentModel {
 	public double getWorkHour() {
 		return workHour;
 	}
-
-
+	
+	
 	public void setId(int id) {
 		this.id = id;
 	}
-	public void setDate(String date) {
+	public void setDate(Date date) {
 		this.date = date;
 	}
 	public void setProjectId(int projectId) {

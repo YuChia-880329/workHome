@@ -1,10 +1,13 @@
 package bean.dto;
 
+import java.util.Date;
+
 import enumeration.DiaryContentStatus;
 
 public class DiaryContentDTO {
 
 	private int id;
+	private Date date;
 	private int projectId;
 	private int phaseId;
 	private int workId;
@@ -14,9 +17,10 @@ public class DiaryContentDTO {
 	
 	public DiaryContentDTO() {
 	}
-	public DiaryContentDTO(int id, int projectId, int phaseId, int workId, String text, double workHour,
+	public DiaryContentDTO(int id, Date date, int projectId, int phaseId, int workId, String text, double workHour,
 			DiaryContentStatus status) {
 		this.id = id;
+		this.date = date;
 		this.projectId = projectId;
 		this.phaseId = phaseId;
 		this.workId = workId;
@@ -28,6 +32,9 @@ public class DiaryContentDTO {
 	
 	public int getId() {
 		return id;
+	}
+	public Date getDate() {
+		return date;
 	}
 	public int getProjectId() {
 		return projectId;
@@ -51,6 +58,9 @@ public class DiaryContentDTO {
 	
 	public void setId(int id) {
 		this.id = id;
+	}
+	public void setDate(Date date) {
+		this.date = date;
 	}
 	public void setProjectId(int projectId) {
 		this.projectId = projectId;

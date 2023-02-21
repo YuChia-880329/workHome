@@ -1,53 +1,54 @@
 
 	let saveAjaxUrl = 'save';
 	
-	
-	function saveAjax(diaryBodyId, dateTextDivId, diaryCountDataName, diaryIdPrefixes, trStatusDataName){
+	var diaryContent = function(count, date, projectId, phaseId, workId, text, workHour, status){
 		
-		var datas = getDatas(diaryBodyId, dateTextDivId, diaryCountDataName, diaryIdPrefixes, trStatusDataName, saveAjaxUrl);
-		$(document.body).append(datas);
+		this.count = count;
+		this.date = date;
+		this.projectId = projectId;
+		this.phaseId = phaseId;
+		this.workId = workId;
+		this.text = text;
+		this.workHour = workHour;
+		this.status = status;
+	}
+	function saveDiaryContent(diaryBodyId, dateTextDivId, diaryCountDataName, diaryIdPrefixes, trStatusDataName){
+		
+		var datas = getDatas(diaryBodyId, dateTextDivId, diaryCountDataName, diaryIdPrefixes, trStatusDataName);
+		var dataValue = JSON.stringify(datas).replaceAll('"', '\"');
+		var formId = 'send_form';
+		var dataName = 'diary_contents';
+		var form = '<form action="' + saveAjaxUrl + '" method="POST" id="' + formId + '">';
+		form += '<input type="hidden" name="' + dataName + '" value=\'' + dataValue + '\' />';
+		form += '</form>';
+		
+		$(document.body).append(form);
 		$('#send_form').submit();
 	}
 	
-	function getDatas(diaryBodyId, dateTextDivId, diaryCountDataName, diaryIdPrefixes, trStatusDataName, actionUrl){
+	function getDatas(diaryBodyId, dateTextDivId, diaryCountDataName, diaryIdPrefixes, trStatusDataName){
 		
 		var diaryTrs = $('#' + diaryBodyId + ' tr');
 		var diaryNumber = diaryTrs.length;
 		
-		var diaryTrCounts = [];
-		var datas = '<form action="' + actionUrl + '" method="POST" id="send_form">';
+		var datas = [];
 		for(var i=0; i<diaryNumber; i++){
 			
 			var diaryTrCount = $(diaryTrs[i]).data(diaryCountDataName);
+			var date =$('#' + dateTextDivId).text();
+			var projectId = $('#' + diaryIdPrefixes.projectIdPrefix + diaryTrCount).val();
+			var phaseIdInput = $('#' + diaryIdPrefixes.phaseIdPrefix + diaryTrCount).val();
+			var workIdInput = $('#' + diaryIdPrefixes.workIdPrefix + diaryTrCount).val();
+			var textInput = $('#' + diaryIdPrefixes.textIdPrefix + diaryTrCount).val();
+			var workHourInput = $('#' + diaryIdPrefixes.hourIdPrefix + diaryTrCount).val();
+			var diaryTrStatus = $(diaryTrs[i]).data(trStatusDataName);
 			
-			var dateInput = getInput('diary_date_', diaryTrCount, $('#' + dateTextDivId).text());
-			var projectIdInput = getInput(diaryIdPrefixes.projectIdPrefix, diaryTrCount, 
-							$('#' + diaryIdPrefixes.projectIdPrefix + diaryTrCount).val());
-			var phaseIdInput = getInput(diaryIdPrefixes.phaseIdPrefix, diaryTrCount,
-			 				$('#' + diaryIdPrefixes.phaseIdPrefix + diaryTrCount).val());
-			var workIdInput = getInput(diaryIdPrefixes.workIdPrefix, diaryTrCount,
-			 				$('#' + diaryIdPrefixes.workIdPrefix + diaryTrCount).val());
-			var textInput = getInput(diaryIdPrefixes.textIdPrefix, diaryTrCount,
-			 				$('#' + diaryIdPrefixes.textIdPrefix + diaryTrCount).val());
-			var workHourInput = getInput(diaryIdPrefixes.hourIdPrefix, diaryTrCount,
-			 				$('#' + diaryIdPrefixes.hourIdPrefix + diaryTrCount).val());
+			var data = new diaryContent(diaryTrCount, date, projectId, phaseIdInput, 
+						workIdInput, textInput, workHourInput, diaryTrStatus);
 			
-			datas += dateInput;
-			datas += projectIdInput;
-			datas += phaseIdInput;
-			datas += workIdInput;
-			datas += textInput;
-			datas += workHourInput;
-			
-			diaryTrCounts[i] = diaryTrCount;
+			datas[i] = data;
 		}
-		datas += '<input type="hidden" name="diary_tr_counts" value="' + diaryTrCounts + '" />';
-		datas += '</form>';
 		return datas;
 	}
 	
-	function getInput(IdPrefix, diaryTrCount, value){
-		
-		var input = '<input type="hidden" name="' + IdPrefix + diaryTrCount + '" value="' + value + '" />'
-		return input;
-	}
+	

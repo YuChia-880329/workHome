@@ -1,17 +1,12 @@
 package memory;
 
-import java.util.HashMap;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import bean.dto.DiaryContentDTO;
 
-public class SentDiaryContentMemoryDealer {
-
-	
-	private DiaryContentMemory memory = DiaryContentMemory.getInstance();
-	private MemoryObjAndDTOTransformer transformer = MemoryObjAndDTOTransformer.getInstance();
+public class SentDiaryContentMemoryDealer extends DiaryContentMemoryDealer {
 
 	private static final SentDiaryContentMemoryDealer INSTANCE = new SentDiaryContentMemoryDealer();
 	
@@ -24,37 +19,28 @@ public class SentDiaryContentMemoryDealer {
 	}
 	
 	
-	public Map<String, List<DiaryContentDTO>> searchAll(){
+	public Map<Date, List<DiaryContentDTO>> searchAll(){
 		
-		Map<String, Set<DiaryContentMemoryObj>> map =  memory.getAllSentDiaryContentMemory();
-		Map<String, List<DiaryContentDTO>> ans = new HashMap<>();
-		
-		for(String str : map.keySet()) {
-			
-			ans.put(str, transformer.memoryObjSetToDtoList(map.get(str)));
-		}
-		
-		return ans;
+		return super.searchAll(memory::getAllSentDiaryContentMemory);
 	}
-	public List<DiaryContentDTO> searchByDate(String date){
+	public List<DiaryContentDTO> searchByDate(Date date){
 		
-		Set<DiaryContentMemoryObj> set = memory.getSentDiaryContentMemoryByDate(date);
-		return transformer.memoryObjSetToDtoList(set);
+		return super.searchByDate(date, memory::getSentDiaryContentMemoryByDate);
 	}
-	public void add(String date, List<DiaryContentDTO> list) {
+	public void add(Date date, List<DiaryContentDTO> list) {
 		
-		memory.saveInSentDiaryContentMemory(date, transformer.dtoListToMemoryObjSet(list));
+		super.add(date, list, memory::saveInSentDiaryContentMemory);
 	}
-	public void update(String date, List<DiaryContentDTO> list) {
+	public void update(Date date, List<DiaryContentDTO> list) {
 		
-		memory.updateInSentDiaryContentMemory(date, transformer.dtoListToMemoryObjSet(list));
+		super.update(date, list, memory::updateInSentDiaryContentMemory);
 	}
-	public void delete(String date) {
+	public void delete(Date date) {
 		
-		memory.deleteInSentDiaryContentMemory(date);
+		super.delete(date, memory::deleteInSentDiaryContentMemory);
 	}
-	public boolean contains(String date, DiaryContentDTO dto) {
+	public boolean contains(Date date, DiaryContentDTO dto) {
 		
-		return memory.containsInSentClone(date, transformer.dtoToMemoryObj(dto));
+		return super.contains(date, dto, memory::containsInSent);
 	}
 }

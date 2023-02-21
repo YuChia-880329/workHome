@@ -1,14 +1,24 @@
 package bean.vo;
 
+import com.google.gson.annotations.SerializedName;
+
 public class DiaryContentVO{
 
+	@SerializedName("count")
 	private String count;
+	@SerializedName("date")
 	private String date;
+	@SerializedName("projectId")
 	private String projectId;
+	@SerializedName("phaseId")
 	private String phaseId;
+	@SerializedName("workId")
 	private String workId;
+	@SerializedName("text")
 	private String text;
+	@SerializedName("workHour")
 	private String workHour;
+	@SerializedName("status")
 	private String status;
 	
 	

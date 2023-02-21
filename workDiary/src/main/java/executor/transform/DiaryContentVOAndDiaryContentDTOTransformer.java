@@ -1,13 +1,14 @@
 package executor.transform;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 import bean.dto.DiaryContentDTO;
 import bean.vo.DiaryContentVO;
 import enumeration.DiaryContentStatus;
+import util.DateUtil;
 
 public class DiaryContentVOAndDiaryContentDTOTransformer {
 
@@ -26,6 +27,14 @@ public class DiaryContentVOAndDiaryContentDTOTransformer {
 		DiaryContentDTO dto = new DiaryContentDTO();
 		
 		dto.setId(Integer.parseInt(vo.getCount()));
+		try {
+			
+			dto.setDate(DateUtil.stringToDate(vo.getDate()));
+		} catch (ParseException ex) {
+			
+			System.out.println(ex.getMessage());
+			dto.setDate(new Date());
+		}
 		dto.setProjectId(Integer.parseInt(vo.getPhaseId()));
 		dto.setPhaseId(Integer.parseInt(vo.getPhaseId()));
 		dto.setWorkId(Integer.parseInt(vo.getWorkId()));
@@ -36,11 +45,11 @@ public class DiaryContentVOAndDiaryContentDTOTransformer {
 		return dto;
 	}
 	
-	public DiaryContentVO dtoToVo(String date, DiaryContentDTO dto) {
+	public DiaryContentVO dtoToVo(DiaryContentDTO dto) {
 		
 		DiaryContentVO vo = new DiaryContentVO();
 		vo.setCount(String.valueOf(dto.getId()));
-		vo.setDate(date);
+		vo.setDate(DateUtil.dateToString(dto.getDate()));
 		vo.setProjectId(String.valueOf(dto.getProjectId()));
 		vo.setPhaseId(String.valueOf(dto.getPhaseId()));
 		vo.setWorkId(String.valueOf(dto.getWorkId()));
@@ -54,59 +63,12 @@ public class DiaryContentVOAndDiaryContentDTOTransformer {
 	
 	public List<DiaryContentDTO> voListToDtoList(List<DiaryContentVO> vos) {
 		
-		List<DiaryContentDTO> list = new ArrayList<>();
-		
-		for(DiaryContentVO vo : vos) {
-			
-			list.add(voToDto(vo));
-		}
-		
-		return list;
+		return vos.stream().map(vo -> voToDto(vo)).collect(Collectors.toList());
 	}
 	
-	public Map<String, List<DiaryContentDTO>> voListToDtoMap(List<DiaryContentVO> vos) {
+
+	public List<DiaryContentVO> dtoListToVoList(List<DiaryContentDTO> dtos) {
 		
-		Map<String, List<DiaryContentDTO>> map = new HashMap<>();
-		
-		
-		for(DiaryContentVO vo : vos) {
-			
-			String date = vo.getDate();
-			List<DiaryContentDTO> list = map.get(date);
-			
-			if(list == null)
-				list = new ArrayList<>();
-			
-			list.add(voToDto(vo));
-			map.put(date, list);
-		}
-		
-		return map;
-	}
-	
-	public List<DiaryContentVO> dtoMapToVoList(Map<String, List<DiaryContentDTO>> dtoMap) {
-		
-		List<DiaryContentVO> list = new ArrayList<>();
-		
-		for(String date : dtoMap.keySet()) {
-			for(DiaryContentDTO dto : dtoMap.get(date)) {
-				
-				list.add(dtoToVo(date, dto));
-			}
-		}
-		
-		return list;
-	}
-	
-	public List<DiaryContentVO> dtoListToVoList(String date, List<DiaryContentDTO> dtos) {
-		
-		List<DiaryContentVO> list = new ArrayList<>();
-		
-		for(DiaryContentDTO dto : dtos) {
-			
-			list.add(dtoToVo(date, dto));
-		}
-		
-		return list;
+		return dtos.stream().map(dto -> dtoToVo(dto)).collect(Collectors.toList());
 	}
 }

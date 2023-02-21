@@ -1,9 +1,12 @@
 package executor;
 
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
+import bean.dto.DiaryContentDTO;
 import bean.vo.DiaryContentVO;
+import enumeration.DiaryContentStatus;
 import executor.transform.DiaryContentVOAndDiaryContentDTOTransformer;
 import memory.SavedDiaryContentMemoryDealer;
 import memory.SentCloneDiaryContentMemoryDealer;
@@ -11,6 +14,7 @@ import memory.SentCloneDiaryContentMemoryDealer;
 public class SaveDiaryContentExecutor {
 
 	private DiaryContentVOAndDiaryContentDTOTransformer transformer = DiaryContentVOAndDiaryContentDTOTransformer.getInstance();
+	private GroupingDiaryContentDTOExecutor groupingExecutor = GroupingDiaryContentDTOExecutor.getInstance();
 	private SavedDiaryContentMemoryDealer savedMemoryDealer = SavedDiaryContentMemoryDealer.getInstance();
 	private SentCloneDiaryContentMemoryDealer sentCloneMemoryDealer = SentCloneDiaryContentMemoryDealer.getInstance();
 	
@@ -28,31 +32,25 @@ public class SaveDiaryContentExecutor {
 		
 		if(vos.size() > 0) {
 			
-			String date = vos.get(0).getDate();
-			List<DiaryContentVO>[] array = sort(vos);
-			savedMemoryDealer.update(date, transformer.voListToDtoList(array[0]));
-			savedMemoryDealer.add(date, transformer.voListToDtoList(array[1]));
-			sentCloneMemoryDealer.update(date, transformer.voListToDtoList(array[2]));
-		}
-	}
-	
-	public List<DiaryContentVO>[] sort(List<DiaryContentVO> vos){
-		
-		@SuppressWarnings("unchecked")
-		List<DiaryContentVO>[] array = new List[3];
-		
-		List<DiaryContentVO> status1List = new ArrayList<>();
-		List<DiaryContentVO> status2List = new ArrayList<>();
-		List<DiaryContentVO> status3List = new ArrayList<>();
-		array[0] = status1List;
-		array[1] = status2List;
-		array[2] = status3List;
-		
-		for(DiaryContentVO vo : vos) {
+			Map<Date, List<DiaryContentDTO>> map = 
+					groupingExecutor.group(transformer.voListToDtoList(vos));
 			
-			String status = vo.getStatus();
-			array[Integer.parseInt(status)-1].add(vo);
+			for(Date date : map.keySet()) {
+				
+				List<DiaryContentDTO>[] array = groupingExecutor.sortSameDateDTOs(map.get(date));
+				
+				if(array[0].size() > 0) {
+					
+					array[0].stream().forEach(dto -> dto.setStatus(DiaryContentStatus.SAVED));
+					savedMemoryDealer.update(date, array[0]);
+				}else if(array[1].size() > 0) {
+					
+					savedMemoryDealer.add(date, array[1]);
+				}else if(array[2].size() > 0) {
+					
+					sentCloneMemoryDealer.update(date, array[2]);
+				}
+			}
 		}
-		return array;
 	}
 }
