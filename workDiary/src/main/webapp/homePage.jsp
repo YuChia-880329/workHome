@@ -8,21 +8,25 @@
 	
 		<link rel="stylesheet" href="css\jquery-ui.min.css"></link>
 	
-		<script src="js\jquery-3.6.3.min.js"></script>
-		<script src="js\jquery-ui.min.js"></script>
+		<script src="js/jquery-3.6.3.min.js"></script>
+		<script src="js/jquery-ui.min.js"></script>
 		
-		<script src="js\variables.js"></script>
-		<script src="js\classDefine.js"></script>
+		<script src="js/variables.js"></script>
+		<script src="js/classDefine.js"></script>
+		
+		<script src="js/diaryContent/diaryBody/diaryTr/diaryProject.js"></script>
+		<script src="js/diaryContent/diaryBody/diaryTr/diaryPhase.js"></script>
+		<script src="js/diaryContent/diaryBody.js"></script>
 		
 		
-		<script src="js\startUp.js"></script>
+<!--  		<script src="js\startUp.js"></script>
 		<script src="js\diaryToDefault.js"></script>
 		<script src="js\diaryTmpl.js"></script>
 		<script src="js\workDate.js"></script>
 		<script src="js\hourChange.js"></script>
 		<script src="js\selectDiary.js"></script>
 		<script src="js\deleteClearAndReset.js"></script>
-		<script src="js\saveDiary.js"></script>
+		<script src="js\saveDiary.js"></script>-->
 	
 		<style type="text/css">
 			div.ui-datepicker {
@@ -32,8 +36,16 @@
 		<script type="text/javascript">
 
 			
+			$(document).ready(function(){
+				
+				diaryBodyPrepare();
+			});
 			
-			let diaryCount = 1;
+			function test(){
+				
+				diaryBody.addStartUpTr('${diaryContentVOsJson}', '${projectVOsJson}');
+			}
+/*			let diaryCount = 1;
 			
 			$(document).ready(function () {
 
@@ -120,7 +132,7 @@
 			function saveBtnClicked(){
 				
 				saveDiaryContent(diaryBodyId, dateTextDivId, diaryCountDataName, diaryIdPrefixes, trStatusDataName);
-			}
+			}*/
 			
 		</script>
 	

@@ -5,9 +5,14 @@ import java.util.stream.Collectors;
 
 import bean.model.ProjectModel;
 import bean.vo.ProjectVO;
+import dao.PhaseModelDAO;
 
 public class ProjectModelAndProjectVOTransformer {
 
+	private PhaseModelAndPhaseVOTransformer phaseTransformer = PhaseModelAndPhaseVOTransformer.getInstance();
+	
+	private PhaseModelDAO phaseDAO = PhaseModelDAO.getInstance();
+	
 	private static final ProjectModelAndProjectVOTransformer INSTANCE = new ProjectModelAndProjectVOTransformer();
 	
 	private ProjectModelAndProjectVOTransformer() {
@@ -24,6 +29,7 @@ public class ProjectModelAndProjectVOTransformer {
 		
 		vo.setProjectId(model.getProjectId());
 		vo.setProjectName(model.getProjectName());
+		vo.setPhaseVOs(phaseTransformer.modelListToVOList(phaseDAO.searchByProjectId(model.getProjectId())));
 		
 		return vo;
 	}

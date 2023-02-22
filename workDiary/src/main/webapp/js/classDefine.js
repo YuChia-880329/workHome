@@ -1,97 +1,136 @@
 
-	class DiaryObj{
+	// js/variable.js
+	
+	class Component{
+		
+		get jquery(){
+			
+			return $('#' + this.id);
+		}
+		get html(){
+			
+			return this.jquery.html();
+		}
+		get element(){
+			
+			return this.jquery[0];
+		}
+	}
+	class ValuedComponent extends Component{
+		
+		get value(){
+			
+			return this.jquery.val();
+		}
+		
+		set value(value){
+			
+			this.jquery.val(value);
+		}
+	}
+	class DiaryObj extends ValuedComponent{
 		
 		count;
-		value;
-		idPrefix;
 		tr;
 		
-		constructor(count, value, idPrefix){
+		constructor(count){
 			
+			super();
 			this.count = count;
-			this.value = value;
-			this.idPrefix = idPrefix;
 		}
 		
 		get id(){
 			
 			return this.idPrefix + this.count;
 		}
-		get jquery(){
-			
-			return $('#' + this.id);
-		}
-		
 	}
 	class DiarySelectObject extends DiaryObj{
 		
-		options;
-		
-		constructor(count, value, idPrefix){
-			
-			super(count, value, idPrefix);
-		}
-		
 		addOption(option){
 			
-			options[options.length] = option;
+			this.jquery.append(option.html);
 		}
-		optionForEach(forEachFctn){
+		
+		static getDefaultOption(){
 			
-			options.forEach(forEachFctn);
+			return new DiarySelectObject.Option(0, '請選擇');
 		}
+		
+		toDefault(){
+			
+			this.jquery.empty();
+			this.jquery.append(DiarySelectObject.getDefaultOption().html);
+		}
+		
+		get options(){
+			
+			var optionNodes = this.element.querySelectorAll('option');
+			var options = [];
+			
+			for(var i=0; i<optionNodes.length; i++){
+				
+				var optionNode = optionNodes[i];
+				options[i] = new DiarySelectObject.Option(optionNode.val(), optionNode.text());
+			}
+		}
+		
+		
 		
 		static Option = class{
 			
-			constructor(value, name){
+			constructor(value, text){
 				
 				this.value = value;
-				this.name = name;
+				this.text = text;
 			}
 			
 			get html(){
 				
-				return '<option value="' + this.value + '">' + this.name + '</option>';
+				return '<option value="' + this.value + '">' + this.text + '</option>';
 			}
 		}
 	}
+	
+	
 	class DiaryProject extends DiarySelectObject{
 		
-		constructor(count, value){
+		get idPrefix(){
 			
-			super(count, value, diaryProjectIdPrefix);
+			return diaryProjectIdPrefix;
 		}
 	}
 	class DiaryPhase extends DiarySelectObject{
 		
-		constructor(count, value){
+		get idPrefix(){
 			
-			super(count, value, diaryPhaseIdPrefix);
+			return diaryPhaseIdPrefix;
 		}
+		
+		
 	}
 	class DiaryWork extends DiarySelectObject{
 		
-		constructor(count, value){
+		get idPrefix(){
 			
-			super(count, value, diaryWorkIdPrefix);
+			return diaryWorkIdPrefix;
 		}
 	}
 	class DiaryText extends DiaryObj{
 		
-		constructor(count, value){
+		get idPrefix(){
 			
-			super(count, value, diaryTextIdPrefix);
+			return diaryTextIdPrefix;
 		}
 	}
 	class DiaryHour extends DiaryObj{
 		
-		constructor(count, value){
+		get idPrefix(){
 			
-			super(count, value, diaryHourIdPrefix);
+			return diaryHourIdPrefix;
 		}
 	}
 	
-	class DiaryTr{
+	class DiaryTr extends Component{
 		
 		count;
 		project;
@@ -99,85 +138,263 @@
 		work;
 		text;
 		hour;
-		status;
 		body;
 		
-		constructor(count, projectValue, phaseValue, workValue, textValue, hourValue, status){
+		constructor(count){
 			
+			super();
 			this.count = count;
-			this.project = new DiaryProject(count, projectValue);
+			this.jquery.data(countDataName, count);
+			this.project = new DiaryProject(count);
 			this.project.tr = this;
-			this.phase = new DiaryPhase(count, phaseValue);
+			this.phase = new DiaryPhase(count);
 			this.phase.tr = this;
-			this.work = new DiaryWork(count, workValue);
+			this.work = new DiaryWork(count);
 			this.work.tr = this;
-			this.text = new DiaryText(count, textValue);
+			this.text = new DiaryText(count);
 			this.text.tr = this;
-			this.hour = new DiaryHour(count, hourValue);
+			this.hour = new DiaryHour(count);
 			this.hour.tr = this;
-			this.status = status;
 		}
 		
 		get id(){
 			
 			return diaryTrIdPrefix + this.count;
 		}
-		get jquery(){
+		
+		get status(){
 			
-			return $('#' + this.id);
+			return his.jquery.data(statusDataName);
 		}
 		
-		static getDiaryTrByJson(trJson){
+		
+		set status(status){
+			
+			this.jquery.data(statusDataName, status);
+		}
+		/*static getDiaryTrByJson(trJson){
 			
 			return new DiaryTr(trJson.count, trJson.projectId, trJson.phaseId, 
 						trJson.workId, trJson.text, trJson.workHour, trJson.status);
-		}
+		}*/
 	}
 	
 	
-	class DiaryBody{
+	class DiaryBody extends Component{
 		
-		trs;
+		addTr;
+		addStartUpTr
 		
-		constructor(trs){
+		constructor(){
 			
-			this.trs = trs;
-			this.trs.forEach(function(currentValue){
-				
-				currentValue.body = this;
-			});
-			this.selectedId = '';
+			super();
+			
 		}
 		
-		addTr(tr){
+		getTr(count){
 			
-			trs[trs.length] = tr;
+			return new DiaryTr(count);
 		}
-		trForEach(forEachFctn){
-			
-			trs.forEach(forEachFctn);
-		}
+		
 		get id(){
 			
 			return diaryBodyId;
 		}
-		get jquery(){
+		
+		get trs(){
 			
-			return $('#' + this.id);
+			var trsNodes = this.element.querySelectorAll('tr');
+			var ans = [];
+			
+			for(var i=0; i<trsNodes.length; i++){
+				
+				var trNode = trsNodes[i];
+				ans[i] = new DiaryTr($(trNode).data(countDataName));
+			}
+			return ans;
 		}
 		
-		get selectedTr(){
+	}
+	
+	
+	
+	class Template extends Component{
+		
+		get id(){
 			
-			for(var i=0; i<diaryTrs.length; i++){
-				
-				var diaryTr = diaryTrs[i];
-				if(diaryTr.id == selectedId)
-					return diaryTr;
-			}
+			return diaryTmplId;
+		}
+		
+		get clone(){
+			
+			return new TemplateClone(this);
+		}
+		
+	}
+	
+	class TemplateCloneComponent{
+		
+		idPrefix;
+		id;
+		templateClone;
+		
+		constructor(idPrefix){
+			
+			this.idPrefix = idPrefix;
+			this.id = idPrefix + 'tmpl';
+		}
+		
+		renameId(count){
+			
+			var countId = this.idPrefix + count;
+			this.jquery.attr('id', countId);
+			this.id = countId;
+		}
+		
+		get element(){
+			
+			return this.templateClone.queryElement('#' + this.id);
+		}
+		get jquery(){
+			
+			return $(this.element);
+		}
+	}
+	class TemplateTr extends TemplateCloneComponent{
+		
+		templateProject;
+		templatePhase;
+		templateWork;
+		templateText;
+		templateHour;
+		
+		constructor(){
+			
+			super(diaryTrIdPrefix);
+			this.templateProject = new TemplateCloneComponent(diaryProjectIdPrefix);
+			this.templatePhase = new TemplateCloneComponent(diaryPhaseIdPrefix);
+			this.templateWork = new TemplateCloneComponent(diaryWorkIdPrefix);
+			this.templateText = new TemplateCloneComponent(diaryTextIdPrefix);
+			this.templateHour = new TemplateCloneComponent(diaryHourIdPrefix);
+		}
+		
+		renameId(count){
+			
+			super.renameId(count);
+			this.templateProject.renameId(count);
+			this.templatePhase.renameId(count);
+			this.templateWork.renameId(count);
+			this.templateText.renameId(count);
+			this.templateHour.renameId(count);
+		}
+	}
+	
+	class TemplateClone{
+		
+		element;
+		templateTr;
+		
+		constructor(template){
+			
+			this.element = template.jquery.clone()[0];
+			this.templateTr = new TemplateTr();
+			this.templateTr.templateClone = this;
+			this.templateTr.templateProject.templateClone = this;
+			this.templateTr.templatePhase.templateClone = this;
+			this.templateTr.templateWork.templateClone = this;
+			this.templateTr.templateText.templateClone = this;
+			this.templateTr.templateHour.templateClone = this;
+		}
+		
+		queryAllNodes(selector){
+			
+			return this.content.querySelectorAll(selector);
+		}
+		queryElement(selector){
+			
+			return this.content.querySelector(selector);
+		}
+		
+		renameId(count){
+			
+			this.templateTr.renameId(count);
+		}
+		
+		
+		get jquery(){
+			
+			return $(this.element);
+		}
+		get html(){
+			
+			return this.jquery.html();
+		}
+		get content(){
+			
+			return this.element.content;
+		}
+		
+	}
+	
+	
+	class Btn extends Component{
+		
+		onClick;
+		
+		constructor(id){
+			
+			super();
+			this.id = id;
+		}
+		
+	}
+	
+	class Calendar extends Component{
+		
+		get id(){
+			
+			return calendarDivId;
+		}
+		
+	}
+	class DateText extends Component{
+		
+		get id(){
+			
+			return dateTextDivId;
+		}
+	}
+	class WorkHourText extends Component{
+		
+		get id(){
+			
+			return workHourTextSpanId;
+		}
+	}
+	class DiaryTrStatusText extends Component{
+		
+		get id(){
+			
+			return diaryTrStatusTextId;
 		}
 	}
 	
 	
-	let diaryBody = new DiaryBody([]);
 	
+	let diaryBody = new DiaryBody();
+	
+	let template = new Template();
+	
+	let createBtn = new Btn(createBtnId);
+	let deleteBtn = new Btn(deleteBtnId);
+	let clearBtn = new Btn(clearBtnId);
+	let resetBtn = new Btn(resetBtnId);
+	
+	let saveBtn = new Btn(saveBtnId);
+	let sentBtn = new Btn(sentBtnId);
+	
+	let calendar = new Calendar();
+	let dateText = new DateText();
+	let workHourText = new WorkHourText();
+	let diaryTrStatusText = new DiaryTrStatusText();
 	
