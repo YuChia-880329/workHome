@@ -1,5 +1,6 @@
 package executor.transform;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,6 +28,8 @@ public class PhaseModelAndPhaseVOTransformer {
 		
 		PhaseVO vo = new PhaseVO();
 		
+		if(model == null)
+			return vo;
 		vo.setPhaseId(model.getPhaseId());
 		vo.setPhaseName(model.getPhaseName());
 		vo.setWorkVOs(workTransformer.modelListToVOList(workDAO.searchByPhaseId(model.getPhaseId())));
@@ -35,6 +38,8 @@ public class PhaseModelAndPhaseVOTransformer {
 	
 	public List<PhaseVO> modelListToVOList(List<PhaseModel> models){
 		
+		if(models == null)
+			return new ArrayList<>();
 		return models.stream().map(model -> modelToVO(model)).collect(Collectors.toList());
 	}
 }

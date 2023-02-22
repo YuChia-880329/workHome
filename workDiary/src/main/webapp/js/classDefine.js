@@ -94,12 +94,16 @@
 	
 	class DiaryProject extends DiarySelectObject{
 		
+		onChange;
+		
 		get idPrefix(){
 			
 			return diaryProjectIdPrefix;
 		}
 	}
 	class DiaryPhase extends DiarySelectObject{
+		
+		onChange;
 		
 		get idPrefix(){
 			
@@ -124,9 +128,20 @@
 	}
 	class DiaryHour extends DiaryObj{
 		
+		onFocus;
+		onFocusOut;
+		
 		get idPrefix(){
 			
 			return diaryHourIdPrefix;
+		}
+		get originalHour(){
+			
+			return this.jquery.data(originalHourDataName);
+		}
+		set originalHour(originalHour){
+			
+			this.jquery.data(originalHourDataName, originalHour);
 		}
 	}
 	
@@ -349,29 +364,58 @@
 		
 	}
 	
-	class Calendar extends Component{
+	class Calendar extends ValuedComponent{
 		
+		onSelect;
+		
+		static dateFormat = 'yy/mm/dd';
+		
+		static parseDate(dateString){
+			
+			return $.datepicker.parseDate(Calendar.dateFormat, dateString);
+		}
 		get id(){
 			
 			return calendarDivId;
 		}
 		
+		get value(){
+			
+			return super.value;
+		}
+		set value(value){
+			
+			this.jquery.datepicker('setDate', value);
+		}
+		
 	}
-	class DateText extends Component{
+	
+	class TextComponent extends Component{
+		
+		get text(){
+			
+			return this.jquery.text();
+		}
+		set text(text){
+			
+			this.jquery.text(text);
+		}
+	}
+	class DateText extends TextComponent{
 		
 		get id(){
 			
 			return dateTextDivId;
 		}
 	}
-	class WorkHourText extends Component{
+	class WorkHourText extends TextComponent{
 		
 		get id(){
 			
 			return workHourTextSpanId;
 		}
 	}
-	class DiaryTrStatusText extends Component{
+	class DiaryTrStatusText extends TextComponent{
 		
 		get id(){
 			

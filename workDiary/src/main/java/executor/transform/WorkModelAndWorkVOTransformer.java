@@ -1,5 +1,6 @@
 package executor.transform;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,6 +23,8 @@ public class WorkModelAndWorkVOTransformer {
 		
 		WorkVO vo = new WorkVO();
 		
+		if(model == null)
+			return vo;
 		vo.setWorkId(model.getWorkId());
 		vo.setWorkName(model.getWorkName());
 		
@@ -30,6 +33,8 @@ public class WorkModelAndWorkVOTransformer {
 	
 	public List<WorkVO> modelListToVOList(List<WorkModel> models){
 		
+		if(models == null)
+			return new ArrayList<>();
 		return models.stream().map(model -> modelToVO(model)).collect(Collectors.toList());
 	}
 }

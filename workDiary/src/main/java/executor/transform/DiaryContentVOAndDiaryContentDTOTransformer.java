@@ -1,6 +1,7 @@
 package executor.transform;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,6 +27,8 @@ public class DiaryContentVOAndDiaryContentDTOTransformer {
 		
 		DiaryContentDTO dto = new DiaryContentDTO();
 		
+		if(vo == null)
+			return dto;
 		dto.setId(Integer.parseInt(vo.getCount()));
 		try {
 			
@@ -48,6 +51,9 @@ public class DiaryContentVOAndDiaryContentDTOTransformer {
 	public DiaryContentVO dtoToVo(DiaryContentDTO dto) {
 		
 		DiaryContentVO vo = new DiaryContentVO();
+		if(dto == null)
+			return vo;
+		
 		vo.setCount(String.valueOf(dto.getId()));
 		vo.setDate(DateUtil.dateToString(dto.getDate()));
 		vo.setProjectId(String.valueOf(dto.getProjectId()));
@@ -63,12 +69,16 @@ public class DiaryContentVOAndDiaryContentDTOTransformer {
 	
 	public List<DiaryContentDTO> voListToDtoList(List<DiaryContentVO> vos) {
 		
+		if(vos == null)
+			return new ArrayList<>();
 		return vos.stream().map(vo -> voToDto(vo)).collect(Collectors.toList());
 	}
 	
 
 	public List<DiaryContentVO> dtoListToVoList(List<DiaryContentDTO> dtos) {
 		
+		if(dtos == null)
+			return new ArrayList<>();
 		return dtos.stream().map(dto -> dtoToVo(dto)).collect(Collectors.toList());
 	}
 }

@@ -1,5 +1,6 @@
 package executor.transform;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,7 +23,10 @@ public class DiaryContentModelAndDiaryContentDTOTransformer {
 	
 	public DiaryContentModel dtoToModel(DiaryContentDTO dto) {
 		
+		
 		DiaryContentModel model = new DiaryContentModel();
+		if(dto == null)
+			return model;
 		
 		model.setId(dto.getId());
 		model.setDate(DateUtil.utilDateToSqlDate(dto.getDate()));
@@ -38,6 +42,8 @@ public class DiaryContentModelAndDiaryContentDTOTransformer {
 	public DiaryContentDTO modelToDto(DiaryContentModel model) {
 		
 		DiaryContentDTO dto = new DiaryContentDTO();
+		if(model == null)
+			return dto;
 		
 		dto.setId(model.getId());
 		dto.setDate(DateUtil.sqlDateToUtilDate(model.getDate()));
@@ -53,11 +59,15 @@ public class DiaryContentModelAndDiaryContentDTOTransformer {
 	
 	public List<DiaryContentModel> dtoListToModelList(List<DiaryContentDTO> dtos){
 		
+		if(dtos == null)
+			return new ArrayList<>();
 		return dtos.stream().map(dto -> dtoToModel(dto)).collect(Collectors.toList());
 	}
 	
 	public List<DiaryContentDTO> modelListToDtoList(List<DiaryContentModel> models){
 		
+		if(models == null)
+			return new ArrayList<>();
 		return models.stream().map(model -> modelToDto(model)).collect(Collectors.toList());
 	}
 }

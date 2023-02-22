@@ -1,5 +1,6 @@
 package executor.transform;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,6 +28,8 @@ public class ProjectModelAndProjectVOTransformer {
 		
 		ProjectVO vo = new ProjectVO();
 		
+		if(model == null)
+			return vo;
 		vo.setProjectId(model.getProjectId());
 		vo.setProjectName(model.getProjectName());
 		vo.setPhaseVOs(phaseTransformer.modelListToVOList(phaseDAO.searchByProjectId(model.getProjectId())));
@@ -36,6 +39,8 @@ public class ProjectModelAndProjectVOTransformer {
 	
 	public List<ProjectVO> modelListToVOList(List<ProjectModel> models){
 		
+		if(models == null)
+			return new ArrayList<>();
 		return models.stream().map(model -> modelToVO(model)).collect(Collectors.toList());
 	}
 }

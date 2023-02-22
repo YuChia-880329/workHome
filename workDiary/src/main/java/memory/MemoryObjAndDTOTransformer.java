@@ -1,5 +1,7 @@
 package memory;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -22,6 +24,8 @@ class MemoryObjAndDTOTransformer {
 	
 	DiaryContentDTO memoryObjToDto(DiaryContentMemoryObj obj) {
 		
+		if(obj == null)
+			return new DiaryContentDTO();
 		return obj.getDiaryContentDTO();
 	}
 	
@@ -33,11 +37,15 @@ class MemoryObjAndDTOTransformer {
 	
 	List<DiaryContentDTO> memoryObjSetToDtoList(Set<DiaryContentMemoryObj> objList) {
 		
+		if(objList == null)
+			return new ArrayList<>();
 		return objList.stream().map(obj -> memoryObjToDto(obj)).collect(Collectors.toList());
 	}
 	
 	Set<DiaryContentMemoryObj> dtoListToMemoryObjSet(List<DiaryContentDTO> dtoList) {
 		
+		if(dtoList == null)
+			return new HashSet<>();
 		return dtoList.stream().map(dto -> dtoToMemoryObj(dto)).collect(Collectors.toSet());
 	}
 }

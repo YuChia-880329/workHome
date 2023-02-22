@@ -2,6 +2,7 @@
 	// js/classDefine.js
 	// js/diaryContent/diaryBody/diaryTr/diaryProject.js
 	// js/diaryContent/diaryBody/diaryTr/diaryPhase.js
+	// js/diaryContent/diaryBody/diaryTr/diaryHour.js
 
 	function diaryBodyPrepare(){
 		
@@ -18,6 +19,7 @@
 		addTrDiaryProjectPrepare(diaryTr, optionsJson);
 		diaryProjectPrepare(diaryTr);
 		diaryPhasePrepare(diaryTr);
+		diaryHourPrepare(diaryTr.hour);
 	}
 	
 	function addTrDiaryProjectPrepare(diaryTr, optionsJson){
@@ -34,19 +36,43 @@
 	function diaryBodyAddStartUpTr(startUpTrsJson, optionsJson){
 		
 		var startUpTrs = JSON.parse(startUpTrsJson);
+		var options = JSON.parse(optionsJson);
 		startUpTrs.forEach(function(currentValue){
 			
 			var count = currentValue.count;
 			diaryBody.addTr(count, optionsJson);
 			var diaryTr = diaryBody.getTr(count);
 			
+			
 			diaryTr.project.value = currentValue.projectId;
-			diaryPhaseAddOptionsVOs(currentValue.phase_vos, diaryTr.phase);
+			
+			var currentDiaryProject = getCurrentDiaryProject(options, diaryTr.project.value);
+			diaryPhaseAddOptionsVOs(currentDiaryProject.phase_vos, diaryTr.phase);
 			diaryTr.phase.value = currentValue.phaseId;
-			diaryWorkAddOptionsVOs(currentValue.phase_vos[diaryTr.phase.value-1].work_vos, diaryTr.work);
+			
+			var currentDiaryPhase = getCurrentDiaryPhase(currentDiaryProject.phase_vos, diaryTr.phase.value);
+			diaryWorkAddOptionsVOs(currentDiaryPhase.work_vos, diaryTr.work);
 			diaryTr.work.value = currentValue.workId;
 			diaryTr.text.value = currentValue.text;
 			diaryTr.hour.value = currentValue.workHour;
 			diaryTr.status = currentValue.status;
 		});
+	}
+	
+	function getCurrentDiaryProject(diaryProjects, projectValue){
+		
+		for(var i=0; i<diaryProjects.length; i++){
+			
+			if(diaryProjects[i].project_id == projectValue)
+				return diaryProjects[i];
+		}
+	}
+	
+	function getCurrentDiaryPhase(diaryPhases, phaseValue){
+		
+		for(var i=0; i<diaryPhases.length; i++){
+			
+			if(diaryPhases[i].phase_id == phaseValue)
+				return diaryPhases[i];
+		}
 	}

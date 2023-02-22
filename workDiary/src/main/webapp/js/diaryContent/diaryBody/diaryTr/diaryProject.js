@@ -4,15 +4,17 @@
 	
 	function diaryProjectPrepare(diaryTr){
 		
-		diaryTr.project.jquery.change(function(){
+		var diaryProject = diaryTr.project;
+		diaryProject.onChange = function(){
 			
 			diaryProjectChangeAjax(diaryTr);
-		});
+		}
+		diaryProject.jquery.change(diaryProject.onChange);
 	}
 	
 	function diaryProjectChangeAjax(diaryTr){
 	
-		var ajaxUrl = 'projChange';
+		var ajaxUrl = projectChangeUrl;
 		var ajaxData = {
 			diary_project_id : diaryTr.project.value
 		}

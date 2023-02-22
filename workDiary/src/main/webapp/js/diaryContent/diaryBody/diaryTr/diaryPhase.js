@@ -4,15 +4,17 @@
 	
 	function diaryPhasePrepare(diaryTr){
 		
-		diaryTr.phase.jquery.change(function(){
+		var diaryPhase = diaryTr.phase;
+		diaryPhase.onChange = function(){
 			
 			diaryPhaseChangeAjax(diaryTr);
-		});
+		}
+		diaryPhase.jquery.change(diaryPhase.onChange);
 	}
 	
 	function diaryPhaseChangeAjax(diaryTr){
 	
-		var ajaxUrl = 'phaseChange';
+		var ajaxUrl = phaseChangeUrl;
 		var ajaxData = {
 			diary_phase_id : diaryTr.phase.value
 		}

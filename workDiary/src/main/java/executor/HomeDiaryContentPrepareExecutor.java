@@ -1,5 +1,6 @@
 package executor;
 
+import java.util.Date;
 import java.util.List;
 
 import bean.dto.DiaryContentDTO;
@@ -13,7 +14,6 @@ public class HomeDiaryContentPrepareExecutor {
 	private SavedDiaryContentMemoryDealer savedMemoryDealer = SavedDiaryContentMemoryDealer.getInstance();
 	private SentCloneDiaryContentMemoryDealer cloneMemoryDealer = SentCloneDiaryContentMemoryDealer.getInstance();
 	private DiaryContentVOAndDiaryContentDTOTransformer transformer = DiaryContentVOAndDiaryContentDTOTransformer.getInstance();
-	private GroupingDiaryContentDTOExecutor gorupingExecutor = GroupingDiaryContentDTOExecutor.getInstance();
 	
 	private static final HomeDiaryContentPrepareExecutor INSTANCE = new HomeDiaryContentPrepareExecutor();
 	
@@ -27,10 +27,10 @@ public class HomeDiaryContentPrepareExecutor {
 	}
 	
 	
-	public List<DiaryContentVO> getDiaryVOsFromMemory(){
+	public List<DiaryContentVO> getDiaryVOsFromMemory(Date date){
 		
-		List<DiaryContentDTO> list = gorupingExecutor.unGroup(savedMemoryDealer.searchAll());
-		list.addAll(gorupingExecutor.unGroup(cloneMemoryDealer.searchAll()));
+		List<DiaryContentDTO> list = savedMemoryDealer.searchByDate(date);
+		list.addAll(cloneMemoryDealer.searchByDate(date));
 		return transformer.dtoListToVoList(list);
 	}
 }

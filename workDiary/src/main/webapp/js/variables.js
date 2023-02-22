@@ -1,4 +1,5 @@
 
+	// id
 	let diaryProjectIdPrefix = 'diary_project_';
 	let diaryPhaseIdPrefix = 'diary_phase_';
 	let diaryWorkIdPrefix = 'diary_work_';
@@ -22,12 +23,21 @@
 	let workHourTextSpanId = 'work_hour_text_span';
 	let diaryTrStatusTextId = 'diary_tr_status_text';
 	
+	// status
 	let trStatusMeaning = {
 		'status1' : '未送交',
 		'status2' : '已儲存',
 		'status3' : '已送交'
 	};
 	
+	// data
 	let countDataName = 'count';
 	let	statusDataName = 'status';
+	let originalHourDataName = 'originalHour';
+	
+	// url
+	let homePageUrl = 'homePage';
+	let projectChangeUrl = 'projChange';
+	let phaseChangeUrl = 'phaseChange';
+	let saveUrl = 'save';
 	

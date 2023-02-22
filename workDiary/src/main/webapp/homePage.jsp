@@ -14,8 +14,12 @@
 		<script src="js/variables.js"></script>
 		<script src="js/classDefine.js"></script>
 		
-		<script src="js/diaryContent/diaryBody/diaryTr/diaryProject.js"></script>
+		<script src="js/other/calendar.js"></script>
+		<script src="js/other/hourText.js"></script>
+		<script src="js/diaryContent/diaryBody/diaryTr/diaryHour.js"></script>
+		<script src="js/diaryContent/diaryBody/diaryTr/diaryWork.js"></script>
 		<script src="js/diaryContent/diaryBody/diaryTr/diaryPhase.js"></script>
+		<script src="js/diaryContent/diaryBody/diaryTr/diaryProject.js"></script>
 		<script src="js/diaryContent/diaryBody.js"></script>
 		
 		
@@ -39,11 +43,14 @@
 			$(document).ready(function(){
 				
 				diaryBodyPrepare();
+				calendarPrepare('${currentDate}');
+
+				startup();
 			});
 			
-			function test(){
-				
-				diaryBody.addStartUpTr('${diaryContentVOsJson}', '${projectVOsJson}');
+			function startup(){
+
+				diaryBodyAddStartUpTr('${diaryContentVOsJson}', '${projectVOsJson}');
 			}
 /*			let diaryCount = 1;
 			
