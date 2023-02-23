@@ -16,7 +16,7 @@
 	let diaryTmplId = 'diary_tmpl';
 	
 	let saveBtnId = 'save_btn';
-	let sentBtnId = 'sent_btn';
+	let sendBtnId = 'send_btn';
 	
 	let calendarDivId = 'calendar_div';
 	let dateTextDivId = 'date_text_div';
@@ -24,20 +24,37 @@
 	let diaryTrStatusTextId = 'diary_tr_status_text';
 	
 	// status
-	let trStatusMeaning = {
-		'status1' : '未送交',
-		'status2' : '已儲存',
-		'status3' : '已送交'
+	let trStatusVariables = {
+		'status1String' : '未送交',
+		'status1Color' : 'red',
+		'status2String' : '已儲存',
+		'status2Color' : 'blue',
+		'status3String' : '已送交',
+		'status3Color' : 'blue'
 	};
 	
 	// data
 	let countDataName = 'count';
 	let	statusDataName = 'status';
 	let originalHourDataName = 'originalHour';
+	let selectedTrCountDataName = 'selectedTrCount';
 	
 	// url
 	let homePageUrl = 'homePage';
 	let projectChangeUrl = 'projChange';
 	let phaseChangeUrl = 'phaseChange';
 	let saveUrl = 'save';
+	let sendUrl = 'send';
+	
+	
+	// color
+	let mouseenterColorString = '#BDEDFF';
+	let mouseleaveColorString = 'white';
+	let mouseClickColorString = '#87CEFA';
+	
+	
+	// others
+	let largestCount = 0;
+	let leastHour = 8;
+	
 	

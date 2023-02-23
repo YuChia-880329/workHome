@@ -13,25 +13,9 @@
 		
 		<script src="js/variables.js"></script>
 		<script src="js/classDefine.js"></script>
+		<script src="js/util.js"></script>
+		<script src="js/initialization.js"></script>
 		
-		<script src="js/other/calendar.js"></script>
-		<script src="js/other/hourText.js"></script>
-		<script src="js/diaryContent/diaryBody/diaryTr/diaryHour.js"></script>
-		<script src="js/diaryContent/diaryBody/diaryTr/diaryWork.js"></script>
-		<script src="js/diaryContent/diaryBody/diaryTr/diaryPhase.js"></script>
-		<script src="js/diaryContent/diaryBody/diaryTr/diaryProject.js"></script>
-		<script src="js/diaryContent/diaryBody.js"></script>
-		
-		
-<!--  		<script src="js\startUp.js"></script>
-		<script src="js\diaryToDefault.js"></script>
-		<script src="js\diaryTmpl.js"></script>
-		<script src="js\workDate.js"></script>
-		<script src="js\hourChange.js"></script>
-		<script src="js\selectDiary.js"></script>
-		<script src="js\deleteClearAndReset.js"></script>
-		<script src="js\saveDiary.js"></script>-->
-	
 		<style type="text/css">
 			div.ui-datepicker {
 				font-size: 10px;
@@ -39,107 +23,123 @@
 		</style>
 		<script type="text/javascript">
 
+			let diaryBody = new DiaryBody();
+
+			let template = new Template();
+			
+			let createBtn = new Btn(createBtnId);
+			let deleteBtn = new Btn(deleteBtnId);
+			let clearBtn = new Btn(clearBtnId);
+			let resetBtn = new Btn(resetBtnId);
+			
+			let saveBtn = new Btn(saveBtnId);
+			let sendBtn = new Btn(sendBtnId);
+			
+			let calendar = new Calendar();
+			let dateText = new DateText();
+			let workHourText = new WorkHourText();
+			let diaryTrStatusText = new DiaryTrStatusText();
+			
+			
+			let projectVOsJson = '${projectVOsJson}';
+			let diaryContentVOsJson = '${diaryContentVOsJson}';
+			let currentDateJson = '${currentDate}';
+			
 			
 			$(document).ready(function(){
 				
-				diaryBodyPrepare();
-				calendarPrepare('${currentDate}');
-
-				startup();
+				init();
+				startUp();
 			});
 			
-			function startup(){
-
-				diaryBodyAddStartUpTr('${diaryContentVOsJson}', '${projectVOsJson}');
-			}
-/*			let diaryCount = 1;
 			
-			$(document).ready(function () {
-
-				initWorkDate(workDateDivId, dateTextDivId);
-				$('#' + createBtnId).click(createBtnClicked);
-				$('#' + diaryBodyId).data(seletedTrDataName, '');
+			function init(){
 				
-				$('#' + deleteBtnId).click(deleteBtnClicked);
-				$('#' + clearBtnId).click(clearBtnClicked);
-				$('#' + resetBtnId).click(resetBtnClicked);
-				
-				$('#' + saveBtnId).click(saveBtnClicked);
-
-			});
-
-			function createBtnClicked(){
-
-				var diaryContent = getDiaryContent(diaryTemplateId, diaryCount, diaryIdPrefixes, trStatusDataName, diaryCountDataName);
-				$('#' + diaryBodyId).append(diaryContent);
-
-				var diaryProjectId = diaryIdPrefixes.projectIdPrefix + diaryCount;
-				var diaryPhaseId = diaryIdPrefixes.phaseIdPrefix + diaryCount;
-				var diaryWorkId = diaryIdPrefixes.workIdPrefix + diaryCount;
-				var diaryHourId = diaryIdPrefixes.hourIdPrefix + diaryCount;
-				var diaryTrId = diaryIdPrefixes.trIdPrefix + diaryCount;
-
-				$('#' + diaryTrId).data(trStatusDataName, '1');
-				$('#' + diaryTrId).data(diaryCountDataName, diaryCount);
-				$('#' + diaryProjectId).change(function(){
-					diaryProjectChanged(diaryProjectId, diaryPhaseId, diaryWorkId);
-				});
-				$('#' + diaryPhaseId).change(function(){
-					diaryPhaseChanged(diaryPhaseId, diaryWorkId);
-				});
-				diaryHourInputSetting(diaryHourId, workHourTextSpanId);
-				selectDiaryTrSetting(diaryTrId, diaryBodyId, deleteBtnId, clearBtnId, seletedTrDataName);
-				mouseenterChangeColor(diaryTrId);
-				mouseleaveChangeColor(diaryTrId);
-				
-				diaryCount++;
+				diaryBodyInit(diaryBody);
+				createBtnInit(createBtn, diaryBody, projectVOsJson, template, workHourText, deleteBtn, clearBtn, diaryTrStatusText);
+				deleteBtnInit(deleteBtn, diaryBody, workHourText, deleteBtn, clearBtn, diaryTrStatusText);
+				clearBtnInit(clearBtn, diaryBody, workHourText, projectVOsJson);
+				resetBtnInit(resetBtn, diaryBody, workHourText, deleteBtn, clearBtn, diaryTrStatusText);
+				saveBtnInit(saveBtn, diaryBody, dateText);
+				sendBtnInit(sendBtn, diaryBody, dateText);
+				calendarInit(calendar);
 			}
 			
-			function diaryProjectChanged(diaryProjectId, diaryPhaseId, diaryWorkId){
-
-				diaryPhaseToDefault(diaryPhaseId);
-				diaryWorkToDefault(diaryWorkId);
-
-				var projectValue = $('#' + diaryProjectId).val();
-				var dataJson = projectChangedAjax(projectValue, diaryPhaseId);
-			}
-			function diaryPhaseChanged(diaryPhaseId, diaryWorkId){
-
-				diaryWorkToDefault(diaryWorkId);
-
-				var phaseValue = $('#' + diaryPhaseId).val();
-				var dataJson = phaseChangedAjax(phaseValue, diaryWorkId);
+			function startUp(){
+				
+				diaryBody.selectedTrCount = '';
+				diaryBodyAddStartUpTr();
+				calendarSetUp();
 			}
 			
-			function deleteBtnClicked(){
+			
+			
+			function diaryBodyAddStartUpTr(){
 				
-				var selectedTrId = $('#' + diaryBodyId).data(seletedTrDataName);
-				var selectedTrCount = $('#' + selectedTrId).data(diaryCountDataName);
-				var hour = $('#' + diaryIdPrefixes.hourIdPrefix + selectedTrCount).val();
+				var diaryContents = JSON.parse(diaryContentVOsJson);
+				var projectOptions = JSON.parse(projectVOsJson);
+				var hourTotal = 0;
+				
+				diaryContents.forEach(function(currentValue){
 					
-				deleteDiaryTr(selectedTrId, diaryBodyId, trStatusDataName, seletedTrDataName, 
-						trStatusMeaning, deleteBtnId, clearBtnId, diaryTrStatusTextId,
-						workHourTextSpanId, hour, str1MinusStr2);
-			}
-			function clearBtnClicked(){
-				
-				var selectedTrId = $('#' + diaryBodyId).data(seletedTrDataName);
-				var selectedTrCount = $('#' + selectedTrId).data(diaryCountDataName);
-				var hour = $('#' + diaryIdPrefixes.hourIdPrefix + selectedTrCount).val();
-				
-				clearDiaryTr(selectedTrId, diaryIdPrefixes, trStatusDataName, diaryCountDataName, trStatusMeaning, diaryTrStatusTextId,
-						diaryProjectToDefault, diaryPhaseToDefault, diaryWorkToDefault, diaryTextToDefault, diaryHourToDefault, 
-						workHourTextSpanId, hour, str1MinusStr2);
-			}
-			function resetBtnClicked(){
-				
-				resetDiary(diaryBodyId, diaryTrStatusTextId, workHourTextSpanId, trStatusMeaning, deleteBtnId, clearBtnId, diaryBodyId, seletedTrDataName);
+					var count = currentValue.count;
+					diaryBody.addTr(count, projectVOsJson, template, workHourText, deleteBtn, clearBtn, diaryTrStatusText);
+					var diaryTr = new DiaryTr(count);
+					
+					
+					diaryTr.project.value = currentValue.projectId;
+					
+					var currentDiaryProject = getCurrentDiaryProject(projectOptions, diaryTr.project.value);
+					DiaryProjectChangeUtil.diaryPhaseAddOptionsVOs(currentDiaryProject.phase_vos, diaryTr.phase);
+					diaryTr.phase.value = currentValue.phaseId;
+					
+					var currentDiaryPhase = getCurrentDiaryPhase(currentDiaryProject.phase_vos, diaryTr.phase.value);
+					DiaryPhaseChangeUtil.diaryWorkAddOptionsVOs(currentDiaryPhase.work_vos, diaryTr.work);
+					diaryTr.work.value = currentValue.workId;
+					diaryTr.text.value = currentValue.text;
+					var hourValue = DiaryHourFocusoutUtil.round(parseFloat(currentValue.workHour));
+					diaryTr.hour.value = hourValue;
+					diaryTr.status = currentValue.status;
+					
+					hourTotal += hourValue;
+					hourTotal = DiaryHourFocusoutUtil.round(hourTotal);
+					
+					if(largestCount < count)
+						largestCount = count;
+				});
+				workHourText.text = hourTotal;
 			}
 			
-			function saveBtnClicked(){
+			function getCurrentDiaryProject(projectOptions, currentProjectValue){
 				
-				saveDiaryContent(diaryBodyId, dateTextDivId, diaryCountDataName, diaryIdPrefixes, trStatusDataName);
-			}*/
+				for(var i=0; i<projectOptions.length; i++){
+					
+					if(projectOptions[i].project_id == currentProjectValue)
+						return projectOptions[i];
+				}
+			}
+			
+			function getCurrentDiaryPhase(phasesOptions, currentPhaseValue){
+				
+				for(var i=0; i<phasesOptions.length; i++){
+					
+					if(phasesOptions[i].phase_id == currentPhaseValue)
+						return phasesOptions[i];
+				}
+			}
+			
+			function calendarSetUp(){
+				
+				$.datepicker.setDefaults({
+					'dateFormat' : Calendar.dateFormat
+				});
+				
+				calendar.jquery.datepicker();
+				calendar.jquery.datepicker('option', 'onSelect', calendar.onSelect);
+				
+				calendar.value = Calendar.parseDate(currentDateJson);
+				dateText.text = currentDateJson;
+			}
 			
 		</script>
 	
@@ -229,7 +229,7 @@
 								<td colspan="6">
 									<div align="center">
 										<input type="button" id="save_btn" value="儲存" />
-										<input type="button" id="sent_btn" value="送交" />
+										<input type="button" id="send_btn" value="送交" />
 									</div>
 								</td>
 							</tr>
@@ -263,7 +263,7 @@
 					</div>
 				</td>
 				<td>
-					<input type="text" id="diary_hour_tmpl" size="1"  value="0.0">
+					<input type="text" id="diary_hour_tmpl" size="1"  value="0">
 				</td>
 			</tr>
 		</template>

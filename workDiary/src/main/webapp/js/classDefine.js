@@ -33,10 +33,11 @@
 		count;
 		tr;
 		
-		constructor(count){
+		constructor(count, tr){
 			
 			super();
 			this.count = count;
+			this.tr = tr;
 		}
 		
 		get id(){
@@ -49,6 +50,11 @@
 		addOption(option){
 			
 			this.jquery.append(option.html);
+		}
+		
+		check(){
+			
+			return this.value != '0';
 		}
 		
 		static getDefaultOption(){
@@ -94,16 +100,12 @@
 	
 	class DiaryProject extends DiarySelectObject{
 		
-		onChange;
-		
 		get idPrefix(){
 			
 			return diaryProjectIdPrefix;
 		}
 	}
 	class DiaryPhase extends DiarySelectObject{
-		
-		onChange;
 		
 		get idPrefix(){
 			
@@ -128,8 +130,16 @@
 	}
 	class DiaryHour extends DiaryObj{
 		
-		onFocus;
-		onFocusOut;
+		
+		check(){
+			
+			var v = this.value;
+			
+			if(v==null || v.trim()=='' || isNaN(v) || parseFloat(v)<0)
+				return false;
+			
+			return true;
+		}
 		
 		get idPrefix(){
 			
@@ -154,22 +164,73 @@
 		text;
 		hour;
 		body;
-		
-		constructor(count){
+
+		constructor(count, body){
 			
 			super();
 			this.count = count;
 			this.jquery.data(countDataName, count);
-			this.project = new DiaryProject(count);
-			this.project.tr = this;
-			this.phase = new DiaryPhase(count);
-			this.phase.tr = this;
-			this.work = new DiaryWork(count);
-			this.work.tr = this;
-			this.text = new DiaryText(count);
-			this.text.tr = this;
-			this.hour = new DiaryHour(count);
-			this.hour.tr = this;
+			this.project = new DiaryProject(count, this);
+			this.phase = new DiaryPhase(count, this);
+			this.work = new DiaryWork(count, this);
+			this.text = new DiaryText(count, this);
+			this.hour = new DiaryHour(count, this);
+			this.body = body;
+		}
+		
+		setColor(colorString){
+			
+			this.jquery.css('background-color', colorString);
+		}
+		
+		trToDiaryContentVo(dateString){
+			
+			var vo = {};
+			vo.count = this.count;
+			vo.date = dateString;
+			vo.projectId = this.project.value;
+			vo.phaseId = this.phase.value;
+			vo.workId = this.work.value;
+			vo.text = this.text.value;
+			vo.workHour = this.hour.value;
+			vo.status = this.status;
+			
+			return vo;
+		}
+		
+		checkWhenSend(){
+			
+			if(!this.project.check()){
+				
+				alert('請選擇專案');
+				return false;
+			}else if(!this.phase.check()){
+				
+				alert('請選擇階段');
+				return false;
+			}else if(!this.work.check()){
+				
+				alert('請選擇工作項目');
+				return false;
+			}
+			if(!this.hour.check()){
+				
+				alert('未輸入工時或輸入格式錯誤');
+				return false;
+			}
+			return true;
+		}
+		
+		static trsToDiaryContentVos(diaryTrs, dateString){
+			
+			var vos = [];
+			
+			for(var i=0; i<diaryTrs.length; i++){
+				
+				vos[i] = diaryTrs[i].trToDiaryContentVo(dateString);
+			}
+			
+			return vos;
 		}
 		
 		get id(){
@@ -179,7 +240,7 @@
 		
 		get status(){
 			
-			return his.jquery.data(statusDataName);
+			return this.jquery.data(statusDataName);
 		}
 		
 		
@@ -198,17 +259,17 @@
 	class DiaryBody extends Component{
 		
 		addTr;
-		addStartUpTr
 		
-		constructor(){
+		checkTrsWhenSend(){
 			
-			super();
+			var trList = this.trs;
 			
-		}
-		
-		getTr(count){
-			
-			return new DiaryTr(count);
+			for(var i=0; i<trList.length; i++){
+				
+				if(!trList[i].checkWhenSend())
+					return false;
+			}
+			return true;
 		}
 		
 		get id(){
@@ -224,9 +285,19 @@
 			for(var i=0; i<trsNodes.length; i++){
 				
 				var trNode = trsNodes[i];
-				ans[i] = new DiaryTr($(trNode).data(countDataName));
+				ans[i] = new DiaryTr($(trNode).data(countDataName), this);
 			}
 			return ans;
+		}
+		
+		get selectedTrCount(){
+			
+			return this.jquery.data(selectedTrCountDataName);
+		}
+		
+		set selectedTrCount(selectedTrCount){
+			
+			this.jquery.data(selectedTrCountDataName, selectedTrCount);
 		}
 		
 	}
@@ -353,19 +424,26 @@
 	
 	
 	class Btn extends Component{
-		
-		onClick;
-		
+
 		constructor(id){
 			
 			super();
 			this.id = id;
 		}
 		
+		disable(){
+			
+			this.jquery.prop('disabled', true);
+		}
+		able(){
+			
+			this.jquery.prop('disabled', false);
+		}
+		
 	}
 	
 	class Calendar extends ValuedComponent{
-		
+
 		onSelect;
 		
 		static dateFormat = 'yy/mm/dd';
@@ -417,6 +495,11 @@
 	}
 	class DiaryTrStatusText extends TextComponent{
 		
+		setTextColor(colorString){
+			
+			this.jquery.css('color', colorString);
+		}
+		
 		get id(){
 			
 			return diaryTrStatusTextId;
@@ -425,7 +508,7 @@
 	
 	
 	
-	let diaryBody = new DiaryBody();
+/*	let diaryBody = new DiaryBody();
 	
 	let template = new Template();
 	
@@ -440,5 +523,5 @@
 	let calendar = new Calendar();
 	let dateText = new DateText();
 	let workHourText = new WorkHourText();
-	let diaryTrStatusText = new DiaryTrStatusText();
+	let diaryTrStatusText = new DiaryTrStatusText(); */
 	

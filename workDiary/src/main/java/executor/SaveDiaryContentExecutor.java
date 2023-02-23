@@ -39,17 +39,13 @@ public class SaveDiaryContentExecutor {
 				
 				List<DiaryContentDTO>[] array = groupingExecutor.sortSameDateDTOs(map.get(date));
 				
-				if(array[0].size() > 0) {
-					
-					array[0].stream().forEach(dto -> dto.setStatus(DiaryContentStatus.SAVED));
-					savedMemoryDealer.update(date, array[0]);
-				}else if(array[1].size() > 0) {
-					
-					savedMemoryDealer.add(date, array[1]);
-				}else if(array[2].size() > 0) {
-					
-					sentCloneMemoryDealer.update(date, array[2]);
-				}
+
+				array[0].stream().forEach(dto -> dto.setStatus(DiaryContentStatus.SAVED));
+				savedMemoryDealer.update(date, array[0]);
+				
+				savedMemoryDealer.add(date, array[1]);
+				
+				sentCloneMemoryDealer.update(date, array[2]);
 			}
 		}
 	}

@@ -26,7 +26,7 @@ public enum DiaryContentStatus {
 		
 		int status = Integer.parseInt(statusStr);
 		DiaryContentStatus[] statuses = DiaryContentStatus.values();
-		if(status < statuses.length)
+		if(status <= statuses.length)
 			return DiaryContentStatus.values()[status-1];
 		
 		return null;

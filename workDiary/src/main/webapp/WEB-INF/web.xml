@@ -22,6 +22,10 @@
 		<servlet-name>saveDataServlet</servlet-name>
 		<servlet-class>controller.servlet.SaveDataServlet</servlet-class>
 	</servlet>
+	<servlet>
+		<servlet-name>sendDataServlet</servlet-name>
+		<servlet-class>controller.servlet.SendDataServlet</servlet-class>
+	</servlet>
 
 	
 	<!-- servlet mapping -->
@@ -40,6 +44,10 @@
 	<servlet-mapping>
 		<servlet-name>saveDataServlet</servlet-name>
 		<url-pattern>/save</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>sendDataServlet</servlet-name>
+		<url-pattern>/send</url-pattern>
 	</servlet-mapping>
 	
 	

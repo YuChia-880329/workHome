@@ -136,7 +136,7 @@ class DiaryContentMemory {
 			objs = new HashSet<>();
 		
 		objs.addAll(set);
-		memory.put(date, set);
+		memory.put(date, objs);
 	}
 	private void updateDiaryContentMemory(LocalDate date, Set<DiaryContentMemoryObj> set, Map<LocalDate, Set<DiaryContentMemoryObj>> memory) {
 		

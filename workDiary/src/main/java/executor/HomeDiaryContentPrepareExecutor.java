@@ -29,8 +29,8 @@ public class HomeDiaryContentPrepareExecutor {
 	
 	public List<DiaryContentVO> getDiaryVOsFromMemory(Date date){
 		
-		List<DiaryContentDTO> list = savedMemoryDealer.searchByDate(date);
-		list.addAll(cloneMemoryDealer.searchByDate(date));
+		List<DiaryContentDTO> list = cloneMemoryDealer.searchByDate(date);
+		list.addAll(savedMemoryDealer.searchByDate(date));
 		return transformer.dtoListToVoList(list);
 	}
 }

@@ -38,7 +38,7 @@ public class DiaryContentVOAndDiaryContentDTOTransformer {
 			System.out.println(ex.getMessage());
 			dto.setDate(new Date());
 		}
-		dto.setProjectId(Integer.parseInt(vo.getPhaseId()));
+		dto.setProjectId(Integer.parseInt(vo.getProjectId()));
 		dto.setPhaseId(Integer.parseInt(vo.getPhaseId()));
 		dto.setWorkId(Integer.parseInt(vo.getWorkId()));
 		dto.setText(vo.getText());
