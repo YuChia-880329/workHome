@@ -5,7 +5,6 @@ public class ProjectModel {
 	private int projectId;
 	private String projectName;
 	
-	
 	public ProjectModel() {
 	}
 	public ProjectModel(int projectId, String projectName) {

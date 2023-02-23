@@ -22,7 +22,7 @@ public class GoHomePageServlet extends HttpServlet {
 	
 	// url
 	public static final String URL = "homePage";
-	private static final String FORWARD_URL = "homePage.jsp";
+	private static final String FORWARD_URL = "WEB-INF/homePage.jsp";
 
 	
 	// parameter

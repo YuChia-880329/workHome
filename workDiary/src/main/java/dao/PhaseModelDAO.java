@@ -1,49 +1,92 @@
 package dao;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
 import bean.model.PhaseModel;
+import util.DBUtil;
 
 public class PhaseModelDAO {
 
-	private List<PhaseModel> list;
-
+	private Connection connection = DBUtil.getInstance().getConnection();
+	
 	private static final PhaseModelDAO INSTANCE = new PhaseModelDAO();
 	private PhaseModelDAO() {
 		
-		PhaseModel phase1 = new PhaseModel(1, "內部", 1);
-		PhaseModel phase2 = new PhaseModel(2, "外部", 1);
-		PhaseModel phase3 = new PhaseModel(3, "休假中", 2);
-		
-		list = new ArrayList<>();
-		list.add(phase1);
-		list.add(phase2);
-		list.add(phase3);
 	}
 	
 	public static PhaseModelDAO getInstance() {
 		return INSTANCE;
 	}
 	
-	public PhaseModel search(int phaseId) {
+	public List<PhaseModel> searchAll(){
 		
-		return list.get(0);
+		String sql = "SELECT PHASE_ID, PHASE_NAME, PROJECT_ID FROM DIARY_PHASE";
+		List<PhaseModel> models = new ArrayList<>();
+		
+		try(Statement statement = connection.createStatement();
+				ResultSet rs = statement.executeQuery(sql)){
+			
+			while(rs.next()) {
+				
+				PhaseModel model = new PhaseModel();
+				model.setPhaseId(rs.getInt("PHASE_ID"));
+				model.setPhaseName(rs.getString("PHASE_NAME"));
+				model.setProjectId(rs.getInt("PROJECT_ID"));
+				models.add(model);
+			}
+		}catch(SQLException ex) {
+			
+			System.out.println(ex.getMessage());
+		}
+		return models;
+	}
+	public PhaseModel searchById(int phaseId) {
+		
+		String sql = "SELECT PHASE_ID, PHASE_NAME, PROJECT_ID FROM DIARY_PHASE WHERE PHASE_ID = " + phaseId;
+		PhaseModel model = null;
+		
+		try(Statement statement = connection.createStatement();
+				ResultSet rs = statement.executeQuery(sql);){
+			
+			while(rs.next()) {
+				
+				model = new PhaseModel();
+				model.setPhaseId(rs.getInt("PHASE_ID"));
+				model.setPhaseName(rs.getString("PHASE_NAME"));
+				model.setProjectId(rs.getInt("PROJECT_ID"));
+			}
+		}catch(SQLException ex) {
+			
+			System.out.println(ex.getMessage());
+		}
+		return model;
 	}
 	public List<PhaseModel> searchByProjectId(int projectId){
 		
-		List<PhaseModel> newList = new ArrayList<>();
-		if(projectId == 1) {
-			newList.add(list.get(0));
-			newList.add(list.get(1));
-		}else if(projectId == 2) {
-			newList.add(list.get(2));
+		String sql = "SELECT PHASE_ID, PHASE_NAME, PROJECT_ID FROM DIARY_PHASE WHERE PROJECT_ID = " + projectId;
+		List<PhaseModel> models = new ArrayList<>();
+		
+		try(Statement statement = connection.createStatement();
+				ResultSet rs = statement.executeQuery(sql);){
+			
+			while(rs.next()) {
+
+				PhaseModel model = new PhaseModel();
+				model.setPhaseId(rs.getInt("PHASE_ID"));
+				model.setPhaseName(rs.getString("PHASE_NAME"));
+				model.setProjectId(rs.getInt("PROJECT_ID"));
+				models.add(model);
+			}
+		}catch(SQLException ex) {
+			
+			System.out.println(ex.getMessage());
 		}
-		
-		return newList;
+		return models;
 	}
-	public List<PhaseModel> searchAll(){
-		
-		return list;
-	}
+	
 }

@@ -297,5 +297,3 @@
 		var url = homePageUrl + '?date=' + dateText;
 		location.assign(url);
 	}
-	
-	

@@ -1,50 +1,94 @@
 package dao;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
 import bean.model.WorkModel;
+import util.DBUtil;
 
 public class WorkModelDAO {
 	
-	private List<WorkModel> list;
-
+	private Connection connection = DBUtil.getInstance().getConnection();
+	
 	private static final WorkModelDAO INSTANCE = new WorkModelDAO();
 	private WorkModelDAO() {
 		
-		WorkModel work1 = new WorkModel(1, "新進人員教育訓練", 1);
-		WorkModel work2 = new WorkModel(2, "外部教育訓練", 2);
-		WorkModel work3 = new WorkModel(3, "公假", 3);
-		
-		list = new ArrayList<>();
-		list.add(work1);
-		list.add(work2);
-		list.add(work3);
 	}
 	
 	public static WorkModelDAO getInstance() {
 		return INSTANCE;
 	}
 	
-	public WorkModel search(int workId) {
+	public List<WorkModel> searchAll(){
 		
-		return list.get(0);
+		String sql = "SELECT WORK_ID, WORK_NAME, PHASE_ID FROM DIARY_WORK";
+		List<WorkModel> models = null;
+		
+		try(Statement statement = connection.createStatement();
+				ResultSet rs = statement.executeQuery(sql)){
+			
+			models = new ArrayList<>();
+			while(rs.next()) {
+				
+				WorkModel model = new WorkModel();
+				model.setWorkId(rs.getInt("WORK_ID"));
+				model.setWorkName(rs.getString("WORK_NAME"));
+				model.setPhaseId(rs.getInt("PHASE_ID"));
+				models.add(model);
+			}
+		}catch(SQLException ex) {
+			
+			System.out.println(ex.getMessage());
+		}
+		return models;
+	}
+	
+	public WorkModel searchById(int workId) {
+		
+		String sql = "SELECT WORK_ID, WORK_NAME, PHASE_ID FROM DIARY_WORK WHERE WORK_ID = " + workId;
+		WorkModel model = null;
+		
+		try(Statement statement = connection.createStatement();
+				ResultSet rs = statement.executeQuery(sql);){
+			
+			while(rs.next()) {
+				
+				model = new WorkModel();
+				model.setWorkId(rs.getInt("WORK_ID"));
+				model.setWorkName(rs.getString("WORK_NAME"));
+				model.setPhaseId(rs.getInt("PHASE_ID"));
+			}
+		}catch(SQLException ex) {
+			
+			System.out.println(ex.getMessage());
+		}
+		return model;
 	}
 	public List<WorkModel> searchByPhaseId(int phaseId){
 		
-		List<WorkModel> newList = new ArrayList<>();
-		if(phaseId == 1) {
-			newList.add(list.get(0));
-		}else if(phaseId == 2) {
-			newList.add(list.get(1));
-		}else if(phaseId == 3) {
-			newList.add(list.get(2));
+		String sql = "SELECT WORK_ID, WORK_NAME, PHASE_ID FROM DIARY_WORK WHERE PHASE_ID = " + phaseId;
+		List<WorkModel> models = new ArrayList<>();
+		
+		try(Statement statement = connection.createStatement();
+				ResultSet rs = statement.executeQuery(sql);){
+			
+			while(rs.next()) {
+
+				WorkModel model = new WorkModel();
+				model.setWorkId(rs.getInt("WORK_ID"));
+				model.setWorkName(rs.getString("WORK_NAME"));
+				model.setPhaseId(rs.getInt("PHASE_ID"));
+				models.add(model);
+			}
+		}catch(SQLException ex) {
+			
+			System.out.println(ex.getMessage());
 		}
-		
-		return newList;
+		return models;
 	}
-	public List<WorkModel> searchAll(){
-		
-		return list;
-	}
+	
 }

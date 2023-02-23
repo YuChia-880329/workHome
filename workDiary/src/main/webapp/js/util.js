@@ -10,14 +10,6 @@
 			});
 		}
 	}
-	class DiaryTrMouseenterUtil{
-		
-		
-	}
-	class DiaryTrMouseleaveUtil{
-		
-		
-	}
 	class DiaryTrClickUtil{
 		
 		static statusTextChange(statusText, status){
@@ -101,10 +93,6 @@
 			});
 		}
 	}
-	class DiaryHourFocusUtil{
-		
-		
-	}
 	class DiaryHourFocusoutUtil{
 		
 		static changeWorkHourText(workHourText, originValueStr, curValueStr){
@@ -130,24 +118,6 @@
 			
 			return Math.round(num*10)/10;
 		}
-	}
-	
-	
-	class CreateBtnClickUtil{
-		
-		
-	}
-	class DeleteBtnClickUtil{
-		
-		
-	}
-	class ClearBtnClickUtil{
-		
-		
-	}
-	class ResetBtnClickUtil{
-		
-		
 	}
 	class SaveBtnClickUtil{
 		
@@ -184,10 +154,4 @@
 			$(document.body).append(form);
 			$('#send_form').submit();
 		}
-	}
-	
-	
-	class CalendarSelectUtil{
-		
-		
 	}

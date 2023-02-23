@@ -1,39 +1,72 @@
 package dao;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
 import bean.model.ProjectModel;
+import util.DBUtil;
 
 public class ProjectModelDAO {
 
 	public static final String URL = "projChange";
 	
-	private List<ProjectModel> list;
+	private Connection connection = DBUtil.getInstance().getConnection();
 
 	private static final ProjectModelDAO INSTANCE = new ProjectModelDAO();
 	private ProjectModelDAO() {
 		
-		ProjectModel project1 = new ProjectModel(1, "教育訓練");
-		ProjectModel project2 = new ProjectModel(2, "休假");
-		
-		list = new ArrayList<>();
-		list.add(project1);
-		list.add(project2);
 	}
 	
 	public static ProjectModelDAO getInstance() {
+		
 		return INSTANCE;
 	}
 	
 	
 	public List<ProjectModel> searchAll(){
 		
-		return list;
+		String sql = "SELECT PROJECT_ID, PROJECT_NAME FROM DIARY_PROJECT";
+		List<ProjectModel> models = new ArrayList<>();
+		
+		try(Statement statement = connection.createStatement();
+				ResultSet rs = statement.executeQuery(sql);){
+			
+			while(rs.next()) {
+				
+				ProjectModel model = new ProjectModel();
+				model.setProjectId(rs.getInt("PROJECT_ID"));
+				model.setProjectName(rs.getString("PROJECT_NAME"));
+				models.add(model);
+			}
+		}catch(SQLException ex) {
+			
+			System.out.println(ex.getMessage());
+		}
+		return models;
 	}
 	
-	public ProjectModel search(int projectId) {
+	public ProjectModel searchById(int projectId) {
 		
-		return list.get(0);
+		String sql = "SELECT PROJECT_ID, PROJECT_NAME FROM DIARY_PROJECT WHERE PROJECT_ID = " + projectId;
+		ProjectModel model = null;
+		
+		try(Statement statement = connection.createStatement();
+				ResultSet rs = statement.executeQuery(sql);){
+			
+			while(rs.next()) {
+				
+				model = new ProjectModel();
+				model.setProjectId(rs.getInt("PROJECT_ID"));
+				model.setProjectName(rs.getString("PROJECT_NAME"));
+			}
+		}catch(SQLException ex) {
+			
+			System.out.println(ex.getMessage());
+		}
+		return model;
 	}
 }

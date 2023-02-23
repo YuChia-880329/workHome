@@ -10,11 +10,13 @@ import dao.DiaryContentModelDAO;
 import enumeration.DiaryContentStatus;
 import executor.transform.DiaryContentModelAndDiaryContentDTOTransformer;
 import executor.transform.DiaryContentVOAndDiaryContentDTOTransformer;
+import memory.SavedDiaryContentMemoryDealer;
 import memory.SentCloneDiaryContentMemoryDealer;
 import memory.SentDiaryContentMemoryDealer;
 
 public class SendDiaryContentExecutor {
 
+	private SavedDiaryContentMemoryDealer savedMemoryDealer = SavedDiaryContentMemoryDealer.getInstance();
 	private SentCloneDiaryContentMemoryDealer sentCloneMemoryDealer = SentCloneDiaryContentMemoryDealer.getInstance();
 	private SentDiaryContentMemoryDealer sentMemoryDealer = SentDiaryContentMemoryDealer.getInstance();
 	private DiaryContentModelDAO dao = DiaryContentModelDAO.getInstance();
@@ -44,6 +46,7 @@ public class SendDiaryContentExecutor {
 				List<DiaryContentDTO>[] array = groupingExecutor.sortSameDateDTOs(map.get(date));
 				
 				
+				savedMemoryDealer.delete(date);
 				array[0].stream().forEach(dto -> dto.setStatus(DiaryContentStatus.SENT));
 				sentCloneMemoryDealer.update(date, array[0]);
 				
@@ -69,6 +72,9 @@ public class SendDiaryContentExecutor {
 					if(!sentMemoryDealer.contains(date, dto)) {
 						
 						dao.add(modelDtoTransformer.dtoToModel(dto));
+					}else {
+						
+						dao.update(modelDtoTransformer.dtoToModel(dto));
 					}
 				}
 				

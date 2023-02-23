@@ -30,7 +30,7 @@
 		'status2String' : '已儲存',
 		'status2Color' : 'blue',
 		'status3String' : '已送交',
-		'status3Color' : 'blue'
+		'status3Color' : 'green'
 	};
 	
 	// data

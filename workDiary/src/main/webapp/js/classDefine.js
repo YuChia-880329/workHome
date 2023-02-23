@@ -505,23 +505,3 @@
 			return diaryTrStatusTextId;
 		}
 	}
-	
-	
-	
-/*	let diaryBody = new DiaryBody();
-	
-	let template = new Template();
-	
-	let createBtn = new Btn(createBtnId);
-	let deleteBtn = new Btn(deleteBtnId);
-	let clearBtn = new Btn(clearBtnId);
-	let resetBtn = new Btn(resetBtnId);
-	
-	let saveBtn = new Btn(saveBtnId);
-	let sentBtn = new Btn(sentBtnId);
-	
-	let calendar = new Calendar();
-	let dateText = new DateText();
-	let workHourText = new WorkHourText();
-	let diaryTrStatusText = new DiaryTrStatusText(); */
-	

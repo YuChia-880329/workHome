@@ -148,7 +148,10 @@ class DiaryContentMemory {
 	}
 	private boolean contains(LocalDate date, DiaryContentMemoryObj obj, Map<LocalDate, Set<DiaryContentMemoryObj>> memory) {
 		
-		return memory.get(date).contains(obj);
+		Set<DiaryContentMemoryObj> set = memory.get(date);
+		if(set == null)
+			return false;
+		return set.contains(obj);
 	}
 	
 	
