@@ -1,0 +1,14 @@
+<Context docBase="workDiary" path="/workDiary" reloadable="true" source="org.eclipse.jst.jee.server:workDiary">
+	 		<Resource
+		  		auth="Container" 
+			 	name="jdbc/oracle"
+			 	type="javax.sql.DataSource"
+				factory="org.apache.tomcat.jdbc.pool.DataSourceFactory"
+				driverClassName="oracle.jdbc.OracleDriver"
+				maxActive="20"
+				maxIdle="10"
+				url="jdbc:oracle:thin:@localhost:1521:xe"
+				username="WORKHOUR"
+				password="root"
+			/>
+	  	</Context>
